@@ -1,7 +1,7 @@
-package explore.with.me.service;
+package ru.practicum.explorewithme.service;
 
-import explore.with.me.model.EndpointHitDto;
-import explore.with.me.model.ViewStatsDto;
+import ru.practicum.explorewithme.model.EndpointHitDto;
+import ru.practicum.explorewithme.model.ViewStatsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;

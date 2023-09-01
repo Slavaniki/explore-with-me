@@ -1,8 +1,8 @@
-package explore.with.me.service;
+package ru.practicum.explorewithme.service;
 
-import explore.with.me.model.EndpointHit;
-import explore.with.me.model.EndpointHitDto;
-import explore.with.me.model.ViewStatsDto;
+import ru.practicum.explorewithme.model.EndpointHit;
+import ru.practicum.explorewithme.model.EndpointHitDto;
+import ru.practicum.explorewithme.model.ViewStatsDto;
 import javafx.util.Pair;
 
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class EndpointHitMapper {
                 .entrySet().stream().map(entry -> new ViewStatsDto(
                         entry.getKey().getKey(),
                         entry.getKey().getValue(),
-                        entry.getValue().intValue()))
+                        entry.getValue().longValue()))
                 .collect(Collectors.toList());
     }
 }

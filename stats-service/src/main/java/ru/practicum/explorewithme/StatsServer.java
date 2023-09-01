@@ -1,4 +1,4 @@
-package explore.with.me;
+package ru.practicum.explorewithme;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

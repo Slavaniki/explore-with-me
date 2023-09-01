@@ -1,4 +1,4 @@
-package explore.with.me.model;
+package ru.practicum.explorewithme.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +8,6 @@ import lombok.Data;
 public class ViewStatsDto {
     private String app;
     private String uri;
-    private Integer hits;
+    private Long hits;
 
 }

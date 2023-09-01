@@ -1,8 +1,8 @@
-package explore.with.me.service;
+package ru.practicum.explorewithme.service;
 
-import explore.with.me.model.EndpointHit;
-import explore.with.me.model.EndpointHitDto;
-import explore.with.me.model.ViewStatsDto;
+import ru.practicum.explorewithme.model.EndpointHit;
+import ru.practicum.explorewithme.model.EndpointHitDto;
+import ru.practicum.explorewithme.model.ViewStatsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class StatsServiceImpl implements StatsService {
                     .collect(Collectors.toList());
         }
         if (hits.isEmpty()) {
-            ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0);
+            ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0L);
             return List.of(nullViews);
         } else {
             return EndpointHitMapper.toViewsStatsDto(hits);

@@ -1,9 +1,9 @@
 version: '3.1'
 services:
   stats-server:
-    build: stats-server
+    build: stats-service
     image: stats-service
-    container_name: stats-server
+    container_name: stats-service
     ports:
       - "9090:9090"
     depends_on:
@@ -23,10 +23,10 @@ services:
       - POSTGRES_USER=kitty
       - POSTGRES_PASSWORD=purrrrrr
 
-  ewm-service:
-    build: ewm-service
+  main-service:
+    build: main-service
     image: main-service
-    container_name: ewm-service
+    container_name: main-service
     ports:
       - "8080:8080"
     depends_on:
