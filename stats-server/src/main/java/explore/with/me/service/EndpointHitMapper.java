@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EndpointHitMapper {
-    public static EndpointHit ToEndpointHit(EndpointHitDto endpointHitDto) {
+    public static EndpointHit toEndpointHit(EndpointHitDto endpointHitDto) {
         return new EndpointHit(
             endpointHitDto.getId(),
             endpointHitDto.getApp(),
@@ -21,7 +21,7 @@ public class EndpointHitMapper {
         );
     }
 
-    public static List<ViewStatsDto> ToViewsStatsDto(List<EndpointHit> endpointHits) {
+    public static List<ViewStatsDto> toViewsStatsDto(List<EndpointHit> endpointHits) {
         return endpointHits.stream().collect(Collectors.groupingBy(
                         endpointHit -> new Pair<>(endpointHit.getApp(), endpointHit.getUri()), Collectors.counting()))
                 .entrySet().stream().map(entry -> new ViewStatsDto(

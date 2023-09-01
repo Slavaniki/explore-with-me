@@ -27,7 +27,7 @@ public class StatsServiceImpl implements StatsService {
     @Transactional
     public void createHit(EndpointHitDto endpointHitDto) {
         endpointHitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        statsRepository.save(EndpointHitMapper.ToEndpointHit(endpointHitDto));
+        statsRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class StatsServiceImpl implements StatsService {
             ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0);
             return List.of(nullViews);
         } else {
-            return EndpointHitMapper.ToViewsStatsDto(hits);
+            return EndpointHitMapper.toViewsStatsDto(hits);
         }
     }
 }
