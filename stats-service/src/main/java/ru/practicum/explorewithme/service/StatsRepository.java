@@ -9,8 +9,14 @@ import java.util.List;
 
 public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
     @Query("select e from EndpointHit e where e.timestamp > ?1 and e.timestamp < ?2 and e.uri in ?3")
-    List<EndpointHit> findEndpointHitsByUrisAndStartBeforeAndEndAfter(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<EndpointHit> findEndpointHitsByStartBeforeAndEndAfter(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("select e from EndpointHit e where e.timestamp > ?1 and e.timestamp < ?2")
-    List<EndpointHit> findEndpointHitsByUrisAndStartBeforeAndEndAfter(LocalDateTime start, LocalDateTime end);
+    List<EndpointHit> findEndpointHitsByStartBeforeAndEndAfter(LocalDateTime start, LocalDateTime end);
+
+    @Query("select distinct e from EndpointHit e where e.timestamp > ?1 and e.timestamp < ?2 and e.uri in ?3")
+    List<EndpointHit> findDistinctEndpointHitsByStartBeforeAndEndAfter(LocalDateTime start, LocalDateTime end, List<String> uris);
+
+    @Query("select distinct e from EndpointHit e where e.timestamp > ?1 and e.timestamp < ?2")
+    List<EndpointHit> findDistinctEndpointHitsByStartBeforeAndEndAfter(LocalDateTime start, LocalDateTime end);
 }
