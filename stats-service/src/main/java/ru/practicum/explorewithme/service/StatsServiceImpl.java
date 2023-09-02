@@ -15,6 +15,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +37,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional(readOnly = true)
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<EndpointHit> hits = new ArrayList<>();
+        List<EndpointHit> hits;
         List<String> urisWithoutBrackets = new ArrayList<>();
         if (uris != null) {
             for (String uri : uris) {
@@ -46,8 +50,7 @@ public class StatsServiceImpl implements StatsService {
         }
         if (unique != null && unique) {
             hits = hits.stream()
-                    .sorted(Comparator.comparing(EndpointHit::getIp))
-                    .distinct()
+                    .filter(distinctByKey(EndpointHit::getIp))
                     .collect(Collectors.toList());
         }
         if (hits.isEmpty()) {
@@ -56,5 +59,10 @@ public class StatsServiceImpl implements StatsService {
         } else {
             return EndpointHitMapper.toViewsStatsDto(hits);
         }
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 }
