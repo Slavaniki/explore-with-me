@@ -35,7 +35,7 @@ public class StatsServiceImpl implements StatsService {
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<EndpointHit> hits = new ArrayList<>();
         List<String> urisWithoutBrackets = new ArrayList<>();
-        if (!uris.isEmpty()) {
+        if (uris != null) {
             for (String uri : uris) {
                 uri = uri.replace("[", "").replace("]", "");
                 urisWithoutBrackets.add(URLDecoder.decode(uri, StandardCharsets.UTF_8));
@@ -44,7 +44,7 @@ public class StatsServiceImpl implements StatsService {
         } else {
             hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end);
         }
-        if (unique) {
+        if (unique != null && unique) {
             hits = hits.stream()
                     .sorted(Comparator.comparing(EndpointHit::getIp))
                     .distinct()
