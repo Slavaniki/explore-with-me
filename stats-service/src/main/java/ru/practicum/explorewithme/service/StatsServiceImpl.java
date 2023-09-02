@@ -33,27 +33,25 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional(readOnly = true)
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<EndpointHit> hits;
+        List<EndpointHit> hits = new ArrayList<>();
         List<String> urisWithoutBrackets = new ArrayList<>();
         if (uris != null) {
             for (String uri : uris) {
                 uri = uri.replace("[", "").replace("]", "");
                 urisWithoutBrackets.add(URLDecoder.decode(uri, StandardCharsets.UTF_8));
             }
-            if (unique != null && unique) {
-                hits = statsRepository.findDistinctEndpointHitsByStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
-            } else {
-                hits = statsRepository.findEndpointHitsByStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
-            }
+            hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
         } else {
-            if (unique != null && unique) {
-                hits = statsRepository.findDistinctEndpointHitsByStartBeforeAndEndAfter(start, end);
-            } else {
-                hits = statsRepository.findEndpointHitsByStartBeforeAndEndAfter(start, end);
-            }
+            hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end);
+        }
+        if (unique != null && unique) {
+            hits = hits.stream()
+                    .sorted(Comparator.comparing(EndpointHit::getIp))
+                    .distinct()
+                    .collect(Collectors.toList());
         }
         if (hits.isEmpty()) {
-            ViewStatsDto nullViews = new ViewStatsDto("недоступно", "недоступно", 0L);
+            ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0L);
             return List.of(nullViews);
         } else {
             return EndpointHitMapper.toViewsStatsDto(hits);
