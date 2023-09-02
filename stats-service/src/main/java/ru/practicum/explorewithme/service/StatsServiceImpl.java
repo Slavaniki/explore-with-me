@@ -33,12 +33,17 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional(readOnly = true)
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        List<EndpointHit> hits = new ArrayList<>();
         List<String> urisWithoutBrackets = new ArrayList<>();
-        for (String uri : uris) {
-            uri = uri.replace("[", "").replace("]", "");
-            urisWithoutBrackets.add(URLDecoder.decode(uri, StandardCharsets.UTF_8));
+        if (!uris.isEmpty()) {
+            for (String uri : uris) {
+                uri = uri.replace("[", "").replace("]", "");
+                urisWithoutBrackets.add(URLDecoder.decode(uri, StandardCharsets.UTF_8));
+            }
+            hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
+        } else {
+            hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end);
         }
-        List<EndpointHit> hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
         if (unique) {
             hits = hits.stream()
                     .sorted(Comparator.comparing(EndpointHit::getIp))
