@@ -39,9 +39,9 @@ public class StatsServiceImpl implements StatsService {
                 urisWithoutBrackets.add(URLDecoder.decode(uri, StandardCharsets.UTF_8));
             }
             if (unique != null && unique) {
-                hits = statsRepository.findDistinctEndpointHitsByUriAndStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
+                hits = statsRepository.findDistinctEndpointHitsByStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
             } else {
-                hits = statsRepository.findEndpointHitsByUriAndStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
+                hits = statsRepository.findEndpointHitsByStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
             }
         } else {
             if (unique != null && unique) {
