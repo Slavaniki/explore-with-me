@@ -1,8 +1,7 @@
 package ru.practicum.explorewithme.service;
 
-import org.springframework.data.jpa.repository.Query;
-import ru.practicum.explorewithme.model.EndpointHit;
 import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.explorewithme.model.EndpointHit;
 
 import java.time.LocalDateTime;
 import java.util.List;
