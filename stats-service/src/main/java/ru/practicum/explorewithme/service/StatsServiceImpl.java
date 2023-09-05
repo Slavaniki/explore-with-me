@@ -43,9 +43,9 @@ public class StatsServiceImpl implements StatsService {
                 uri = uri.replace("[", "").replace("]", "");
                 urisWithoutBrackets.add(URLDecoder.decode(uri, StandardCharsets.UTF_8));
             }
-            hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end, urisWithoutBrackets);
+            hits = statsRepository.findByUriInAndTimestampAfterAndTimestampBefore(urisWithoutBrackets, start, end);
         } else {
-            hits = statsRepository.findEndpointHitsByUrisAndStartBeforeAndEndAfter(start, end);
+            hits = statsRepository.findByTimestampAfterAndTimestampBefore(start, end);
         }
         if (unique != null && unique) {
             hits = hits.stream()
