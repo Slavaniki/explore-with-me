@@ -90,7 +90,6 @@ public class EventRequestStatusUpdateResult {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class EventRequestStatusUpdateResult {\n");
-    
     sb.append("    confirmedRequests: ").append(toIndentedString(confirmedRequests)).append("\n");
     sb.append("    rejectedRequests: ").append(toIndentedString(rejectedRequests)).append("\n");
     sb.append("}");
