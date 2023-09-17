@@ -12,6 +12,7 @@ import ru.practicum.explorewithme.client.ViewsStats;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
 import ru.practicum.explorewithme.dto.event.NewEventDto;
+import ru.practicum.explorewithme.dto.participation.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.dto.participation.ParticipationRequestDto;
 import ru.practicum.explorewithme.exeption.EventsException;
 import ru.practicum.explorewithme.exeption.NotFoundException;
@@ -206,7 +207,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public ParticipationRequestDto confirmRequestInEventByUser(Long userId, Long eventId, Long reqId) {
+    public EventRequestStatusUpdateResult confirmRequestInEventByUser(Long userId, Long eventId, Set<Long> requestIds) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с id " + userId + " не найден");
         }
@@ -215,20 +216,26 @@ public class EventServiceImpl implements EventService {
         if (!event.getInitiator().getId().equals(userId)) {
             throw new RequestException("Пользователь с id " + userId + " не создатель события");
         }
-        Participation confirmRequest = participationRepository.findById(reqId).orElseThrow(() ->
-                new NotFoundException("Запрос на участие с id " + reqId + " не найден"));
-        if (participationRepository.countByEvent_IdAndStatusContaining(eventId, "CONFIRMED")
-                .equals(event.getParticipantLimit())) {
-            throw new EventsException("Лимит заявок на событие id " + eventId + " уже исчерпан");
-        }
-        confirmRequest.setStatus("CONFIRMED");
-        ParticipationRequestDto participationDto = ParticipationMapper
-                .participationToParticipationDto(participationRepository.save(confirmRequest));
-        if (participationRepository.countByEvent_IdAndStatusContaining(eventId, "CONFIRMED") >=
-                (event.getParticipantLimit())) {
-            changeStatusOfParticipantToRejected(eventId);
-        }
-        return participationDto;
+        EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
+        List<ParticipationRequestDto> participationDtos = new ArrayList<>();
+        requestIds.forEach(reqId -> {
+            Participation confirmRequest = participationRepository.findById(reqId).orElseThrow(() ->
+                    new NotFoundException("Запрос на участие с id " + reqId + " не найден"));
+            if (participationRepository.countByEvent_IdAndStatusContaining(eventId, "CONFIRMED")
+                    .equals(event.getParticipantLimit())) {
+                throw new EventsException("Лимит заявок на событие id " + eventId + " уже исчерпан");
+            }
+            confirmRequest.setStatus("CONFIRMED");
+            ParticipationRequestDto participationDto = ParticipationMapper
+                    .participationToParticipationDto(participationRepository.save(confirmRequest));
+            if (participationRepository.countByEvent_IdAndStatusContaining(eventId, "CONFIRMED") >=
+                    (event.getParticipantLimit())) {
+                changeStatusOfParticipantToRejected(eventId);
+            }
+            participationDtos.add(participationDto);
+        });
+        eventRequestStatusUpdateResult.setConfirmedRequests(participationDtos);
+        return eventRequestStatusUpdateResult;
     }
 
     @Override
