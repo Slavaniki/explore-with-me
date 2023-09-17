@@ -247,9 +247,9 @@ public class EventServiceImpl implements EventService {
                     throw new RequestException("Параметр state " + state + " не найден");
                 }
             }
-        } else {
+        } /*else {
             statesReform = null;
-        }
+        }*/
         Page<Event> eventsPage;
         if (states != null) {
             eventsPage = eventRepository.getEventsWithStates(usersId,
