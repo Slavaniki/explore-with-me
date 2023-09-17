@@ -1,7 +1,6 @@
 package ru.practicum.explorewithme.dto.participation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
