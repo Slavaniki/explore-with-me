@@ -43,8 +43,8 @@ public class ParticipationServiceImpl implements ParticipationService {
         if (event.getInitiator().getId().equals(userId)) {
             throw new EventsException("Инициатор не может подать заявку на своё событие");
         }
-        if (!event.getState().equals(EventState.PUBLISHED)) {
-            throw new EventsException("Нельзя подать заявку на неопубликованное событие");
+        if (event.getState().equals(EventState.CANCELED)) {
+            throw new EventsException("Нельзя подать заявку на отмененное событие");
         }
         if (event.getParticipantLimit().equals(participationRepository
                 .countByEvent_IdAndStatusContaining(eventId, "CONFIRMED"))) {
