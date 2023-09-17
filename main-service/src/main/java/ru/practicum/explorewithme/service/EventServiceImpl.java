@@ -137,7 +137,7 @@ public class EventServiceImpl implements EventService {
         Category category = categoryRepository.findById(eventDto.getCategory()).orElseThrow(() ->
                 new RequestException("Категория с id " + eventDto.getCategory() + " не найдена"));
         if (eventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new EventsException("Время начала события не может быть раньше, чем через 2 часа");
+            throw new RequestException("Время начала события не может быть раньше, чем через 2 часа");
         }
         Event event = EventMapper.newEventDtoToEvent(eventDto, category, userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден")));
@@ -281,7 +281,8 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getDescription() != null && !eventDto.getDescription().equals(adminUpdateEvent.getDescription())) {
             adminUpdateEvent.setDescription(eventDto.getDescription());
         }
-        if (eventDto.getEventDate() != null && !eventDto.getEventDate().equals(adminUpdateEvent.getEventDate())) {
+        if (eventDto.getEventDate() != null && !eventDto.getEventDate().equals(adminUpdateEvent.getEventDate())
+                && eventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(1))) {
             adminUpdateEvent.setEventDate(eventDto.getEventDate());
         }
         if (eventDto.getPaid() != null && eventDto.getPaid() != (adminUpdateEvent.getPaid())) {
