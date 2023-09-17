@@ -38,7 +38,7 @@ public class EventAdminController {
         return eventService.searchEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
-    @PutMapping("/{eventId}")
+    @PatchMapping("/{eventId}")
     public EventFullDto updateEventAdmin(@PathVariable Long eventId, @RequestBody NewEventDto eventDto) {
         log.info("Обновление события по id " + eventId);
         return eventService.updateEventByAdmin(eventId, eventDto);
