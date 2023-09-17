@@ -38,13 +38,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Event findByIdAndInitiator_Id(Long eventId, Long userId);
 
     @Query("select e from Event e " +
-            "where e.initiator.id in ?1 and e.state in ?2 and e.category.id in ?3 and e.eventDate > ?4 and e.eventDate < ?5")
+            "where e.initiator_id in ?1 and e.state in ?2 and e.category_id in ?3 and e.eventDate > ?4 and e.eventDate < ?5")
     Page<Event> getEventsWithStates(Collection<Long> initiatorId, Collection<EventState> state,
                                     Collection<Long> categoryId, LocalDateTime eventDate, LocalDateTime eventDate2,
                                     Pageable pageable);
 
     @Query("select e from Event e " +
-            "where e.initiator.id in ?1 and e.category.id in ?2 and e.eventDate > ?3 and e.eventDate < ?4")
+            "where e.initiator_id in ?1 and e.category_id in ?2 and e.eventDate > ?3 and e.eventDate < ?4")
     Page<Event> getEventsWithoutStates(Collection<Long> initiatorId, Collection<Long> categoryId,
                                        LocalDateTime eventDate, LocalDateTime eventDate2, Pageable pageable);
 
