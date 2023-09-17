@@ -21,7 +21,6 @@ public class EventRequestStatusUpdateRequest {
    */
   public enum StatusEnum {
     CONFIRMED("CONFIRMED"),
-    
     REJECTED("REJECTED");
 
     private String value;
@@ -46,6 +45,7 @@ public class EventRequestStatusUpdateRequest {
       return null;
     }
   }
+
   @JsonProperty("status")
   private StatusEnum status = null;
 
@@ -114,7 +114,6 @@ public class EventRequestStatusUpdateRequest {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class EventRequestStatusUpdateRequest {\n");
-    
     sb.append("    requestIds: ").append(toIndentedString(requestIds)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("}");
