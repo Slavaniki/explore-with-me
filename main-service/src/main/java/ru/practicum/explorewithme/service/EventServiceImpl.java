@@ -271,6 +271,9 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByAdmin(Long eventId, NewEventDto eventDto) {
         Event adminUpdateEvent = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с id " + eventId + " не найдено"));
+        if (eventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(1))) {
+            throw new RequestException("Неверное время");
+        }
         if (eventDto.getAnnotation() != null && !eventDto.getAnnotation().equals(adminUpdateEvent.getAnnotation())) {
             adminUpdateEvent.setAnnotation(eventDto.getAnnotation());
         }
@@ -281,8 +284,7 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getDescription() != null && !eventDto.getDescription().equals(adminUpdateEvent.getDescription())) {
             adminUpdateEvent.setDescription(eventDto.getDescription());
         }
-        if (eventDto.getEventDate() != null && !eventDto.getEventDate().equals(adminUpdateEvent.getEventDate())
-                && eventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(1))) {
+        if (eventDto.getEventDate() != null && !eventDto.getEventDate().equals(adminUpdateEvent.getEventDate())) {
             adminUpdateEvent.setEventDate(eventDto.getEventDate());
         }
         if (eventDto.getPaid() != null && eventDto.getPaid() != (adminUpdateEvent.getPaid())) {
