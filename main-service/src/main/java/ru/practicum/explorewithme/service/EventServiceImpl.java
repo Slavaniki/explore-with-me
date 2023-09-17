@@ -183,7 +183,7 @@ public class EventServiceImpl implements EventService {
         if (!event.getInitiator().getId().equals(userId)) {
             throw new RequestException("Пользователь с id " + userId + " не создатель события");
         }
-        if (!event.getState().equals(EventState.PENDING)) {
+        if (!event.getState().equals(EventState.CANCELED)) {
             throw new EventsException("Событие нельзя отменить, так как его статус - "
                     + event.getState());
         }
