@@ -187,7 +187,7 @@ public class EventServiceImpl implements EventService {
             throw new EventsException("Событие нельзя отменить, так как его статус - "
                     + event.getState());
         }
-        event.setState(EventState.CANCELED);
+        event.setState(EventState.PENDING);
         return EventMapper.eventToEventFullDto(eventRepository.save(event), participationRepository
                 .countByEvent_IdAndStatusContaining(eventId, "CONFIRMED"));
     }
@@ -302,6 +302,9 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getLocation() != null && eventDto.getLocation().getLon() != null &&
                 !eventDto.getLocation().getLon().equals(adminUpdateEvent.getLongitude())) {
             adminUpdateEvent.setLongitude(eventDto.getLocation().getLon());
+        }
+        if (eventDto.getStateAction().equals("REJECT_EVENT")) {
+            adminUpdateEvent.setState(EventState.CANCELED);
         }
         return EventMapper.eventToEventFullDto(eventRepository.save(adminUpdateEvent),
                 participationRepository.countByEvent_IdAndStatusContaining(adminUpdateEvent.getId(), "CONFIRMED"));
