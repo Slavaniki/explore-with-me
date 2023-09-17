@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
 import ru.practicum.explorewithme.dto.event.NewEventDto;
+import ru.practicum.explorewithme.dto.participation.EventRequestStatusUpdateRequest;
 import ru.practicum.explorewithme.dto.participation.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.dto.participation.ParticipationRequestDto;
 import ru.practicum.explorewithme.service.EventService;
@@ -52,8 +53,8 @@ public class EventPrivateController {
 
     @PatchMapping("/{userId}/events/{eventId}/requests")
     public EventRequestStatusUpdateResult confirmRequestEventByUser(@PathVariable Long userId, @PathVariable Long eventId,
-                                                                    @RequestBody List<Long> requestIds) {
+                                                                    @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         log.info("Изменение статуса события с id " + eventId);
-        return eventService.confirmRequestInEventByUser(userId, eventId, requestIds);
+        return eventService.confirmRequestInEventByUser(userId, eventId, eventRequestStatusUpdateRequest.getRequestIds());
     }
 }
