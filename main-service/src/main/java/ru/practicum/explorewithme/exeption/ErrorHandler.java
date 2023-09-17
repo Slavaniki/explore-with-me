@@ -35,7 +35,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleEventsException(final EventsException e, WebRequest webRequest) {
         List<String> errors = new ArrayList<>();
         Arrays.stream(e.getStackTrace()).forEach(error -> errors.add(error.toString()));
