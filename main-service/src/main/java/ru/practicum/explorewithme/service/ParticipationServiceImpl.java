@@ -46,10 +46,10 @@ public class ParticipationServiceImpl implements ParticipationService {
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new EventsException("Нельзя подать заявку на неопубликованное событие");
         }
-        if (event.getParticipantLimit().equals(participationRepository
+        /*if (event.getParticipantLimit().equals(participationRepository
                 .countByEvent_IdAndStatusContaining(eventId, "CONFIRMED"))) {
             throw new EventsException("Лимит заявок на событие исчерпан");
-        }
+        }*/
         ParticipationRequestDto participationDto = new ParticipationRequestDto();
         participationDto.setRequester(userId);
         participationDto.setEvent(eventId);
