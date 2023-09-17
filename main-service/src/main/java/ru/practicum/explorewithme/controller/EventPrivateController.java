@@ -11,7 +11,6 @@ import ru.practicum.explorewithme.dto.participation.ParticipationRequestDto;
 import ru.practicum.explorewithme.service.EventService;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @Slf4j
