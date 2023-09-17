@@ -53,7 +53,7 @@ public class EventPrivateController {
 
     @PatchMapping("/{userId}/events/{eventId}/requests")
     public EventRequestStatusUpdateResult confirmRequestEventByUser(@PathVariable Long userId, @PathVariable Long eventId,
-                                                                    @PathVariable Set<Long> requestIds) {
+                                                                    @PathVariable List<Long> requestIds) {
         log.info("Изменение статуса события с id " + eventId);
         return eventService.confirmRequestInEventByUser(userId, eventId, requestIds);
     }

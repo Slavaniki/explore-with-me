@@ -207,7 +207,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventRequestStatusUpdateResult confirmRequestInEventByUser(Long userId, Long eventId, Set<Long> requestIds) {
+    public EventRequestStatusUpdateResult confirmRequestInEventByUser(Long userId, Long eventId, List<Long> requestIds) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с id " + userId + " не найден");
         }

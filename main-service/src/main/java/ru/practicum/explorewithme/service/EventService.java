@@ -29,7 +29,7 @@ public interface EventService {
 
     List<ParticipationRequestDto> getParticipantsInEventByUser(Long userId, Long eventId);
 
-    EventRequestStatusUpdateResult confirmRequestInEventByUser(Long userId, Long eventId, Set<Long> requestIds);
+    EventRequestStatusUpdateResult confirmRequestInEventByUser(Long userId, Long eventId, List<Long> requestIds);
 
     List<EventFullDto> searchEventsByAdmin(Set<Long> usersId, Set<String> states, Set<Long> categoriesId,
                                            LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size);
