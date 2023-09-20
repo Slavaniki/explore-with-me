@@ -311,6 +311,9 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getStateAction().equals("REJECT_EVENT")) {
             adminUpdateEvent.setState(EventState.CANCELED);
         }
+        if (eventDto.getStateAction().equals("PUBLISH_EVENT")) {
+            adminUpdateEvent.setState(EventState.PUBLISHED);
+        }
         return EventMapper.eventToEventFullDto(eventRepository.save(adminUpdateEvent),
                 participationRepository.countByEvent_IdAndStatusContaining(adminUpdateEvent.getId(), "CONFIRMED"));
     }
