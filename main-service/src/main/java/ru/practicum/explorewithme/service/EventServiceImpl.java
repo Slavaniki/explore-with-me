@@ -257,7 +257,7 @@ public class EventServiceImpl implements EventService {
         }
         Page<Event> eventsPage;
         if (states != null && !states.isEmpty()) {
-            eventsPage = eventRepository.getEventsWithStates(usersId,
+            eventsPage = eventRepository.findEventsByInitiator_IdInAndStateInAndCategory_IdInAndEventDateIsBetween(usersId,
                     statesReform, categoriesId, rangeStart, rangeEnd, PageRequest.of(from, size));
         } else {
             eventsPage = eventRepository.getEventsWithoutStates(usersId,

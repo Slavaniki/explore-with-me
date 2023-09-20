@@ -37,9 +37,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Event findByIdAndInitiator_Id(Long eventId, Long userId);
 
-    @Query("select e from Event e " +
-            "where e.initiator.id in ?1 and e.state in ?2 and e.category.id in ?3 and e.eventDate > ?4 and e.eventDate < ?5")
-    Page<Event> getEventsWithStates(Collection<Long> initiatorId, Collection<EventState> state,
+    Page<Event> findEventsByInitiator_IdInAndStateInAndCategory_IdInAndEventDateIsBetween(Collection<Long> initiatorId, Collection<EventState> state,
                                     Collection<Long> categoryId, LocalDateTime eventDate, LocalDateTime eventDate2,
                                     Pageable pageable);
 
