@@ -53,6 +53,9 @@ public class EventServiceImpl implements EventService {
                                                             LocalDateTime rangeStart, LocalDateTime  rangeEnd,
                                                             Boolean onlyAvailable, String sort, int from, int size,
                                                             HttpServletRequest request) {
+        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd) ) {
+            throw new RequestException("Дата начала не может быть позже даты конца");
+        }
         List<Event> eventsWithSort;
         LocalDateTime start = rangeStart == null ? LocalDateTime.now().minusYears(5) : rangeStart;
         LocalDateTime end = rangeEnd == null ? LocalDateTime.now().plusYears(5) : rangeEnd;
@@ -116,6 +119,7 @@ public class EventServiceImpl implements EventService {
         if (event == null) {
             throw new NotFoundException("Событие с id " + eventId + " не найдено");
         }
+        //TODO
         saveView(request.getRequestURI(), request.getRemoteAddr());
         List<ViewsStats> lvs = getViewsByEvent(LocalDateTime.now().minusYears(5), LocalDateTime.now().plusSeconds(2),
                 List.of(request.getRequestURI()));
@@ -185,7 +189,7 @@ public class EventServiceImpl implements EventService {
             throw new RequestException("Пользователь с id " + userId + " не создатель события");
         }
         if (!event.getState().equals(EventState.CANCELED)) {
-            throw new EventsException("Событие нельзя отменить, так как его статус - "
+            throw new RequestException("Событие нельзя отменить, так как его статус - "
                     + event.getState());
         }
         event.setState(EventState.PENDING);

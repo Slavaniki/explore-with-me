@@ -47,7 +47,7 @@ public class ParticipationServiceImpl implements ParticipationService {
             throw new EventsException("Нельзя подать заявку на отмененное событие");
         }
         if (event.getParticipantLimit().equals(participationRepository
-                .countByEvent_IdAndStatusContaining(eventId, "CONFIRMED"))) {
+                .countByEvent_IdAndStatusContaining(eventId, "CONFIRMED")) && event.getParticipantLimit() != 0) {
             throw new EventsException("Лимит заявок на событие исчерпан");
         }
         ParticipationRequestDto participationDto = new ParticipationRequestDto();
