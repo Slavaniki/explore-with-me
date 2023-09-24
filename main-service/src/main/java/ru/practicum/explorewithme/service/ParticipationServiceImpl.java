@@ -58,6 +58,9 @@ public class ParticipationServiceImpl implements ParticipationService {
         } else {
             participationDto.setStatus("PENDING");
         }
+        if (event.getParticipantLimit() == 0) {
+            participationDto.setStatus("CONFIRMED");
+        }
         participationDto.setCreated(LocalDateTime.now());
         return ParticipationMapper.participationToParticipationDto(participationRepository.save(ParticipationMapper
                 .participationDtoToParticipation(participationDto, user, event)));

@@ -2,6 +2,8 @@ package ru.practicum.explorewithme.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.participation.ParticipationRequestDto;
 import ru.practicum.explorewithme.service.ParticipationService;
@@ -22,9 +24,14 @@ public class ParticipationPrivateController {
     }
 
     @PostMapping("/{userId}/requests")
-    public ParticipationRequestDto addRequest(@PathVariable Long userId, @RequestParam Long eventId) {
+    public ResponseEntity<ParticipationRequestDto> addRequest(@PathVariable Long userId, @RequestParam Long eventId) {
         log.info("Добавление запроса от пользователя c id " + userId + " на событие с id " + eventId);
-        return participationService.addRequestByUserForEvent(userId, eventId);
+        ParticipationRequestDto participationRequestDto = participationService.addRequestByUserForEvent(userId, eventId);
+        if (participationRequestDto.getParticipantLimit() == 0) {
+            return new ResponseEntity<>(participationRequestDto, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(participationRequestDto, HttpStatus.OK);
+        }
     }
 
     @PatchMapping("/{userId}/requests/{requestId}/cancel")

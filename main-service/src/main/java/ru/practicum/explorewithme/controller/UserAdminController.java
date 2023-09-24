@@ -2,6 +2,8 @@ package ru.practicum.explorewithme.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.user.UserDto;
 import ru.practicum.explorewithme.service.UserService;
@@ -17,9 +19,10 @@ public class UserAdminController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         log.info("Создать пользователя " + userDto);
-        return userService.addUser(userDto);
+        UserDto userDtoRes = userService.addUser(userDto);
+        return new ResponseEntity<>(userDtoRes, HttpStatus.CREATED);
     }
 
     @GetMapping

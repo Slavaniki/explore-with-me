@@ -8,6 +8,7 @@ import ru.practicum.explorewithme.dto.categories.CategoryDto;
 import ru.practicum.explorewithme.dto.categories.NewCategoryDto;
 import ru.practicum.explorewithme.exeption.EventsException;
 import ru.practicum.explorewithme.exeption.NotFoundException;
+import ru.practicum.explorewithme.exeption.RequestException;
 import ru.practicum.explorewithme.mapper.CategoryMapper;
 import ru.practicum.explorewithme.repository.CategoryRepository;
 import ru.practicum.explorewithme.repository.EventRepository;
@@ -24,6 +25,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto addCategory(NewCategoryDto categoryDto) {
+        if (categoryDto.getName().isBlank() || categoryDto.getName().length() > 50) {
+            throw new RequestException("Количество символов имени не может быть больше 250 или пустым");
+        }
         return CategoryMapper.categoryToCategoryDto(categoryRepository.save(CategoryMapper
                 .newCategoryDtoToCategory(categoryDto)));
     }

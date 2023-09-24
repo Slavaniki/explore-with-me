@@ -21,6 +21,7 @@ public class ParticipationMapper {
         participationRequestDto.setEvent(participation.getEvent().getId());
         participationRequestDto.setRequester(participation.getRequester().getId());
         participationRequestDto.setStatus(participation.getStatus());
+        participationRequestDto.setParticipantLimit(participation.getEvent().getParticipantLimit());
         return participationRequestDto;
     }
 

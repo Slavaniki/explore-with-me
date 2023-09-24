@@ -2,15 +2,15 @@ package ru.practicum.explorewithme.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import ru.practicum.explorewithme.client.EndpointHit;
-import ru.practicum.explorewithme.client.ViewsStats;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class Client {

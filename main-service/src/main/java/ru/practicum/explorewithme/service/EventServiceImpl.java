@@ -119,7 +119,6 @@ public class EventServiceImpl implements EventService {
         if (event == null) {
             throw new NotFoundException("Событие с id " + eventId + " не найдено");
         }
-        //TODO
         saveView(request.getRequestURI(), request.getRemoteAddr());
         List<ViewsStats> lvs = getViewsByEvent(LocalDateTime.now().minusYears(5), LocalDateTime.now().plusSeconds(2),
                 List.of(request.getRequestURI()));
@@ -138,6 +137,15 @@ public class EventServiceImpl implements EventService {
                 || eventDto.getDescription().isBlank() || eventDto.getAnnotation().isBlank() ||
                 eventDto.getEventDate() == null || eventDto.getLocation() == null || eventDto.getTitle() == null) {
             throw new RequestException("Пустыми могут быть только поля paid, participantLimit, requestModeration");
+        }
+        if (eventDto.getDescription().length() < 20) {
+            throw new RequestException("Количество символов описания меньше 20");
+        }
+        if (eventDto.getAnnotation().length() > 2000 || eventDto.getAnnotation().length() < 20) {
+            throw new RequestException("Количество символов аннотации меньше 20 или больше 2000");
+        }
+        if (eventDto.getTitle().length() < 3 || eventDto.getTitle().length() > 120) {
+            throw new RequestException("Количество символов заголовка меньше 3 или больше 120");
         }
         Category category = categoryRepository.findById(eventDto.getCategory()).orElseThrow(() ->
                 new RequestException("Категория с id " + eventDto.getCategory() + " не найдена"));
@@ -280,6 +288,15 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByAdmin(Long eventId, NewEventDto eventDto) {
         Event adminUpdateEvent = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с id " + eventId + " не найдено"));
+        if (eventDto.getDescription() != null && (eventDto.getDescription().length() < 20 || eventDto.getDescription().length() > 7000)) {
+            throw new RequestException("Количество символов описания меньше 20");
+        }
+        if (eventDto.getAnnotation() != null && (eventDto.getAnnotation().length() > 2000 || eventDto.getAnnotation().length() < 20)) {
+            throw new RequestException("Количество символов аннотации меньше 20 или больше 2000");
+        }
+        if (eventDto.getTitle() != null && (eventDto.getTitle().length() < 3 || eventDto.getTitle().length() > 120)) {
+            throw new RequestException("Количество символов заголовка меньше 3 или больше 120");
+        }
         if (eventDto.getAnnotation() != null && !eventDto.getAnnotation().equals(adminUpdateEvent.getAnnotation())) {
             adminUpdateEvent.setAnnotation(eventDto.getAnnotation());
         }
@@ -293,6 +310,9 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getEventDate() != null && !eventDto.getEventDate().equals(adminUpdateEvent.getEventDate())
                 && eventDto.getEventDate().isAfter(LocalDateTime.now().plusHours(1))) {
             adminUpdateEvent.setEventDate(eventDto.getEventDate());
+        }
+        if (eventDto.getEventDate() != null && eventDto.getEventDate().isBefore(LocalDateTime.now())) {
+            throw new RequestException("Нельзя изменить дату на уже наступившую");
         }
         if (eventDto.getPaid() != null && eventDto.getPaid() != (adminUpdateEvent.getPaid())) {
             adminUpdateEvent.setPaid(eventDto.getPaid());
@@ -312,10 +332,10 @@ public class EventServiceImpl implements EventService {
                 !eventDto.getLocation().getLon().equals(adminUpdateEvent.getLongitude())) {
             adminUpdateEvent.setLongitude(eventDto.getLocation().getLon());
         }
-        if (eventDto.getStateAction().equals("REJECT_EVENT")) {
+        if (eventDto.getStateAction() != null && eventDto.getStateAction().equals("REJECT_EVENT")) {
             adminUpdateEvent.setState(EventState.CANCELED);
         }
-        if (eventDto.getStateAction().equals("PUBLISH_EVENT")) {
+        if (eventDto.getStateAction() != null && eventDto.getStateAction().equals("PUBLISH_EVENT")) {
             adminUpdateEvent.setState(EventState.PUBLISHED);
         }
         return EventMapper.eventToEventFullDto(eventRepository.save(adminUpdateEvent),

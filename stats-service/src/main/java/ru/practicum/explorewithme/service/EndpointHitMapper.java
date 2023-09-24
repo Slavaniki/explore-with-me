@@ -2,8 +2,8 @@ package ru.practicum.explorewithme.service;
 
 import ru.practicum.explorewithme.model.EndpointHit;
 import ru.practicum.explorewithme.model.EndpointHitDto;
+import ru.practicum.explorewithme.model.Triple;
 import ru.practicum.explorewithme.model.ViewStatsDto;
-import javafx.util.Pair;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,12 +22,16 @@ public class EndpointHitMapper {
     }
 
     public static List<ViewStatsDto> toViewsStatsDto(List<EndpointHit> endpointHits) {
+        EndpointHit eh;
         return endpointHits.stream().collect(Collectors.groupingBy(
-                        endpointHit -> new Pair<>(endpointHit.getApp(), endpointHit.getUri()), Collectors.counting()))
+                        endpointHit -> new Triple(endpointHit.getApp(), endpointHit.getUri(), endpointHit.getIp()),
+                        Collectors.counting()))
                 .entrySet().stream().map(entry -> new ViewStatsDto(
-                        entry.getKey().getKey(),
-                        entry.getKey().getValue(),
-                        entry.getValue().longValue()))
+                        entry.getKey().getFirst().toString(),
+                        entry.getKey().getSecond().toString(),
+                        entry.getValue().longValue(),
+                        entry.getKey().getThird().toString()
+                        ))
                 .collect(Collectors.toList());
     }
 }

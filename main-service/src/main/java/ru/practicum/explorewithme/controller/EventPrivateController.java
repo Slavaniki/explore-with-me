@@ -2,6 +2,8 @@ package ru.practicum.explorewithme.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
@@ -22,15 +24,16 @@ public class EventPrivateController {
 
     @GetMapping("/{userId}/events")
     public List<EventShortDto> getEventsByUser(@PathVariable Long userId, @RequestParam(defaultValue = "0") int from,
-                                               @RequestParam(defaultValue = "1000") int size) {
+                                               @RequestParam(defaultValue = "10") int size) {
         log.info("Получить событий пользователя с id " + userId);
         return eventService.getEventsByUserId(userId, from, size);
     }
 
     @PostMapping("/{userId}/events")
-    public EventFullDto addEvent(@PathVariable Long userId, @RequestBody NewEventDto eventDto) {
+    public ResponseEntity<EventFullDto> addEvent(@PathVariable Long userId, @RequestBody NewEventDto eventDto) {
         log.info("Добавить событие " + eventDto);
-        return eventService.addEvent(eventDto, userId);
+        EventFullDto eventFullDto = eventService.addEvent(eventDto, userId);
+        return new ResponseEntity<>(eventFullDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}/events/{eventId}")

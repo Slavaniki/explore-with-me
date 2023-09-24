@@ -33,7 +33,7 @@ public class EventAdminController {
                                                 @RequestParam(required = false) @DateTimeFormat(pattern =
                                                         "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                                 @RequestParam(defaultValue = "0") int from,
-                                                @RequestParam(defaultValue = "1000") int size) {
+                                                @RequestParam(defaultValue = "10") int size) {
         log.info("Поиск событий");
         return eventService.searchEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }

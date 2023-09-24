@@ -22,8 +22,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto addUser(UserDto user) {
-        if (user.getName() == null || user.getEmail() == null) {
+        if (user.getName() == null || user.getEmail() == null || user.getEmail().isBlank() || user.getName().isBlank()) {
             throw new RequestException("Поля name и email не могут быть пустыми");
+        }
+        if (user.getName().length() < 2 || user.getName().length() > 250) {
+            throw new RequestException("Количество символов имени меньше 2 или больше 250");
+        }
+        if (user.getEmail().length() < 6 || user.getEmail().length() > 254) {
+            throw new RequestException("Количество символов email меньше 6 или больше 254");
         }
         return UserMapper.userToUserDto(userRepository.save(UserMapper.userDtoToUser(user)));
     }

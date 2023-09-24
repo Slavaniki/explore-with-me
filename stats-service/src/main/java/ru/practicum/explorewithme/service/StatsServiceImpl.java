@@ -30,7 +30,10 @@ public class StatsServiceImpl implements StatsService {
     @Transactional
     public void createHit(EndpointHitDto endpointHitDto) {
         endpointHitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        statsRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
+        List<EndpointHit> testUnique = statsRepository.findByUriAndIp(endpointHitDto.getUri(), endpointHitDto.getIp());
+        if (testUnique.size() == 0) {
+            statsRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
+        }
     }
 
     @Override
@@ -53,7 +56,7 @@ public class StatsServiceImpl implements StatsService {
                     .collect(Collectors.toList());
         }
         if (hits.isEmpty()) {
-            ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0L);
+            ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0L, "unavailable");
             return List.of(nullViews);
         } else {
             return EndpointHitMapper.toViewsStatsDto(hits);

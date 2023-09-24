@@ -2,6 +2,8 @@ package ru.practicum.explorewithme.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.categories.CategoryDto;
 import ru.practicum.explorewithme.dto.categories.NewCategoryDto;
@@ -16,12 +18,13 @@ public class CategoryAdminController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public CategoryDto addCategory(@RequestBody NewCategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody NewCategoryDto categoryDto) {
         if (categoryDto.getName() == null) {
             throw new RequestException("Поле name не должно быть пустым");
         }
         log.info("Создать новую категорию " + categoryDto.getName());
-        return categoryService.addCategory(categoryDto);
+        CategoryDto categoryDtoRes = categoryService.addCategory(categoryDto);
+        return new ResponseEntity<>(categoryDtoRes, HttpStatus.CREATED);
     }
 
     @PatchMapping

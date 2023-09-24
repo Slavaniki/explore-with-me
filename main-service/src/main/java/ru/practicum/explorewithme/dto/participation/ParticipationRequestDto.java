@@ -12,4 +12,5 @@ public class ParticipationRequestDto implements Serializable {
     private Long event;
     private Long requester;
     private String status;
+    private Integer participantLimit;
 }

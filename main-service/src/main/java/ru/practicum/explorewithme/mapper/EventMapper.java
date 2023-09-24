@@ -31,6 +31,18 @@ public class EventMapper {
     }
 
     public static EventFullDto eventToEventFullDto(Event event, Integer confirmedRequest) {
+        Boolean isPaid = false;
+        Integer participantLimit = 0;
+        Boolean requestModeration = true;
+        if (event.getPaid() != null) {
+            isPaid = event.getPaid();
+        }
+        if (event.getParticipantLimit() != null) {
+            participantLimit = event.getParticipantLimit();
+        }
+        if (event.getRequestModeration() != null) {
+            requestModeration = event.getRequestModeration();
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Location location = new Location();
         location.setLat(event.getLatitude());
@@ -44,10 +56,10 @@ public class EventMapper {
         eventFullDto.setDescription(event.getDescription());
         eventFullDto.setEventDate(event.getEventDate().format(formatter));
         eventFullDto.setInitiator(event.getInitiator());
-        eventFullDto.setPaid(event.getPaid());
-        eventFullDto.setParticipantLimit(event.getParticipantLimit());
+        eventFullDto.setPaid(isPaid);
+        eventFullDto.setParticipantLimit(participantLimit);
         eventFullDto.setPublishedOn(event.getPublishedOn());
-        eventFullDto.setRequestModeration(event.getRequestModeration());
+        eventFullDto.setRequestModeration(requestModeration);
         eventFullDto.setState(event.getState().name());
         eventFullDto.setTitle(event.getTitle());
         eventFullDto.setViews(event.getViews());

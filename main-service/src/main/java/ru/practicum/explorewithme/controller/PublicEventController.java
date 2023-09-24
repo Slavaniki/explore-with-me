@@ -40,7 +40,7 @@ public class PublicEventController {
                                                    @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                    @RequestParam(required = false) String sort,
                                                    @RequestParam(defaultValue = "0") int from,
-                                                   @RequestParam(defaultValue = "1000") int size,
+                                                   @RequestParam(defaultValue = "10") int size,
                                                    HttpServletRequest request) {
         log.info("Получить события с фильтром");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

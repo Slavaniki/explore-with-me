@@ -2,6 +2,8 @@ package ru.practicum.explorewithme.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.compilation.CompilationDto;
 import ru.practicum.explorewithme.dto.compilation.NewCompilationDto;
@@ -15,9 +17,10 @@ public class CompilationAdminController {
     private final CompilationService compilationService;
 
     @PostMapping
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    public ResponseEntity<CompilationDto> addCompilation(@RequestBody NewCompilationDto newCompilationDto) {
         log.info("Добавить newCompilationDto " + newCompilationDto);
-        return compilationService.addCompilation(newCompilationDto);
+        CompilationDto compilationDto = compilationService.addCompilation(newCompilationDto);
+        return new ResponseEntity<>(compilationDto, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{compId}")

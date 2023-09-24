@@ -32,8 +32,8 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto compilationDto) {
-        if (compilationDto.getTitle() == null) {
-            throw new RequestException("Поле title не должно быть пустым");
+        if (compilationDto.getTitle() == null || compilationDto.getTitle().length() > 50) {
+            throw new RequestException("Поле title не должно быть пустым или длиннее 50 символов");
         }
         List<EventShortDto> eventsDto = new ArrayList<>();
         List<Event> events = eventRepository.findAllById(compilationDto.getEvents());
