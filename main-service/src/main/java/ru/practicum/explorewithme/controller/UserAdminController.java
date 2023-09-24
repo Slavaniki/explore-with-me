@@ -21,8 +21,8 @@ public class UserAdminController {
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         log.info("Создать пользователя " + userDto);
-        UserDto userDtoRes = userService.addUser(userDto);
-        return new ResponseEntity<>(userDtoRes, HttpStatus.CREATED);
+        UserDto userDtoResult = userService.addUser(userDto);
+        return new ResponseEntity<>(userDtoResult, HttpStatus.CREATED);
     }
 
     @GetMapping
