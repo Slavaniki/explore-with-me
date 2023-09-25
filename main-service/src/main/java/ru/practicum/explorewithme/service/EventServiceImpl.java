@@ -67,12 +67,11 @@ public class EventServiceImpl implements EventService {
             eventsWithSort = eventRepository.getEventsWithSortViews(categoriesId,
                     paid, rangeStart, rangeEnd, EventState.PUBLISHED, text, text, PageRequest.of(from, size));
         } else if (categoriesId != null) {
-            eventsWithSort = eventRepository.findAll(PageRequest.of(from, size)).stream()
-                    .filter(event -> categoriesId.contains(event.getCategory().getId())
-                            && event.getAnnotation().equalsIgnoreCase(text)
-                            && event.getPaid() == paid
-                            && event.getEventDate().isAfter(start)
-                            && event.getEventDate().isBefore(end))
+            List<Event> allEvents = eventRepository.findAll();
+            log.info("categoriesId: " + categoriesId);
+            eventsWithSort = allEvents.stream()
+                    .filter(event -> categoriesId.contains(event.getCategory().getId()))
+                    .limit(size)
                     .collect(Collectors.toList());
         } else if (text != null) {
             eventsWithSort = eventRepository.findAll(PageRequest.of(from, size)).stream()
@@ -384,7 +383,7 @@ public class EventServiceImpl implements EventService {
     private List<ViewsStats> getViewsByEvent(LocalDateTime rangeStart, LocalDateTime rangeEnd, List<String> uris) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String start = rangeStart == null ? LocalDateTime.now().minusYears(5).format(formatter) : rangeStart.format(formatter);
-        String end = rangeEnd == null ? LocalDateTime.now().plusSeconds(2).format(formatter) : rangeEnd.format(formatter);
+        String end = rangeEnd == null ? LocalDateTime.now().plusSeconds(20).format(formatter) : rangeEnd.format(formatter);
         return statsClient.getViews(start, end, uris, false);
     }
 
