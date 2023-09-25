@@ -252,6 +252,7 @@ public class EventServiceImpl implements EventService {
         }
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
         List<ParticipationRequestDto> participationDtos = new ArrayList<>();
+        List<ParticipationRequestDto> rparticipationDtos = new ArrayList<>();
         eventRequestStatusUpdateRequest.getRequestIds().forEach(reqId -> {
             Participation confirmRequest = participationRepository.findById(reqId).orElseThrow(() ->
                     new NotFoundException("Запрос на участие с id " + reqId + " не найден"));
@@ -259,17 +260,21 @@ public class EventServiceImpl implements EventService {
                     .equals(event.getParticipantLimit())) {
                 throw new EventsException("Лимит заявок на событие id " + eventId + " уже исчерпан");
             }
-            confirmRequest.setStatus("CONFIRMED");
+            confirmRequest.setStatus(eventRequestStatusUpdateRequest.getStatus().name());
             ParticipationRequestDto participationDto = ParticipationMapper
                     .participationToParticipationDto(participationRepository.save(confirmRequest));
             if (participationRepository.countByEvent_IdAndStatusContaining(eventId, "CONFIRMED") >=
                     (event.getParticipantLimit())) {
                 changeStatusOfParticipantToRejected(eventId);
             }
-            participationDtos.add(participationDto);
+            if (eventRequestStatusUpdateRequest.getStatus() == EventRequestStatusUpdateRequest.StatusEnum.CONFIRMED) {
+                participationDtos.add(participationDto);
+            } else {
+                rparticipationDtos.add(participationDto);
+            }
         });
         eventRequestStatusUpdateResult.setConfirmedRequests(participationDtos);
-        eventRequestStatusUpdateResult.setRejectedRequests(new ArrayList<>());
+        eventRequestStatusUpdateResult.setRejectedRequests(rparticipationDtos);
         return eventRequestStatusUpdateResult;
     }
 
