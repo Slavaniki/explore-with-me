@@ -13,9 +13,11 @@ public interface CompilationService {
 
     void removeAnEventFromCompilation(Long compID, Long eventId);
 
-    void addEventToCompilation(Long compID, Long eventId);
+    void addEventToCompilation(Long compID, Long eventId, NewCompilationDto newCompilationDto);
 
     List<CompilationDto> getCompilations(Boolean pinned, int from, int size);
 
     CompilationDto getCompilationById(Long compId);
+
+    CompilationDto updateCompilation(Long compId, NewCompilationDto newCompilationDto);
 }

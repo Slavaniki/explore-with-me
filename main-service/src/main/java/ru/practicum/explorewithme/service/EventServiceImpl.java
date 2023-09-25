@@ -71,7 +71,7 @@ public class EventServiceImpl implements EventService {
                             && event.getAnnotation().equalsIgnoreCase(text)
                             && event.getPaid() == paid
                             && event.getEventDate().isAfter(start)
-                            && event.getEventDate().isBefore(end))
+                            && event.getEventDate().isBefore(end) )
                     .collect(Collectors.toList());
         } else if (text != null) {
             eventsWithSort = eventRepository.findAll(PageRequest.of(from, size)).stream()
@@ -187,7 +187,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventFullDto canceledEventByUser(Long userId, Long eventId) {
+    public EventFullDto updateEventByUser(Long userId, Long eventId, EventFullDto newEvent) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с id " + eventId + " не найдено"));
         if (!userRepository.existsById(userId)) {
@@ -196,11 +196,32 @@ public class EventServiceImpl implements EventService {
         if (!event.getInitiator().getId().equals(userId)) {
             throw new RequestException("Пользователь с id " + userId + " не создатель события");
         }
-        if (!event.getState().equals(EventState.CANCELED)) {
-            throw new RequestException("Событие нельзя отменить, так как его статус - "
-                    + event.getState());
+        if (event.getState() == EventState.PUBLISHED) {
+            throw new EventsException("Нельзя изменить опубликованное событие");
         }
         event.setState(EventState.PENDING);
+        String textDate = newEvent.getEventDate();
+        if (textDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime newDate = LocalDateTime.parse(textDate, formatter);
+            if (event.getEventDate().isAfter(newDate)) {
+                throw new RequestException("Дата " + newEvent.getEventDate() + " раньше события");
+            }
+        }
+        if (newEvent.getTitle() != null && (newEvent.getTitle().length() < 3 || newEvent.getTitle().length() > 120)) {
+            throw new RequestException("getTitle");
+        }
+        if (newEvent.getDescription() != null &&
+                (newEvent.getDescription().length() < 20 || newEvent.getDescription().length() > 7000)) {
+            throw new RequestException("getDescription");
+        }
+        if (newEvent.getAnnotation() != null &&
+                (newEvent.getAnnotation().length() < 20 || newEvent.getAnnotation().length() > 2000)) {
+            throw new RequestException("getAnnotation");
+        }
+        if (newEvent.getState() != null && newEvent.getState().equals("CANCEL_REVIEW")) {
+            event.setState(EventState.CANCELED);
+        }
         return EventMapper.eventToEventFullDto(eventRepository.save(event), participationRepository
                 .countByEvent_IdAndStatusContaining(eventId, "CONFIRMED"));
     }
@@ -272,8 +293,7 @@ public class EventServiceImpl implements EventService {
             eventsPage = eventRepository.findEventsByInitiator_IdInAndStateInAndCategory_IdInAndEventDateIsBetween(usersId,
                     statesReform, categoriesId, rangeStart, rangeEnd, PageRequest.of(from, size));
         } else {
-            eventsPage = eventRepository.getEventsWithoutStates(usersId,
-                    categoriesId, rangeStart, rangeEnd, PageRequest.of(from, size));
+            eventsPage = eventRepository.findAll(PageRequest.of(from, size));
         }
         List<EventFullDto> events = new ArrayList<>();
         for (Event event : eventsPage) {
@@ -288,10 +308,24 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventByAdmin(Long eventId, NewEventDto eventDto) {
         Event adminUpdateEvent = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с id " + eventId + " не найдено"));
-        if (eventDto.getDescription() != null && (eventDto.getDescription().length() < 20 || eventDto.getDescription().length() > 7000)) {
+        if (adminUpdateEvent.getState() == EventState.PUBLISHED &&
+                eventDto.getStateAction().equals("PUBLISH_EVENT")) {
+            throw new EventsException("Событие уже опубликованно");
+        }
+        if (adminUpdateEvent.getState() == EventState.CANCELED &&
+                eventDto.getStateAction().equals("PUBLISH_EVENT")) {
+            throw new EventsException("Событие уже отменено");
+        }
+        if (adminUpdateEvent.getState() == EventState.PUBLISHED &&
+                eventDto.getStateAction().equals("REJECT_EVENT")) {
+            throw new EventsException("Событие уже опубликованно");
+        }
+        if (eventDto.getDescription() != null && (eventDto.getDescription().length() < 20 ||
+                eventDto.getDescription().length() > 7000)) {
             throw new RequestException("Количество символов описания меньше 20");
         }
-        if (eventDto.getAnnotation() != null && (eventDto.getAnnotation().length() > 2000 || eventDto.getAnnotation().length() < 20)) {
+        if (eventDto.getAnnotation() != null && (eventDto.getAnnotation().length() > 2000 ||
+                eventDto.getAnnotation().length() < 20)) {
             throw new RequestException("Количество символов аннотации меньше 20 или больше 2000");
         }
         if (eventDto.getTitle() != null && (eventDto.getTitle().length() < 3 || eventDto.getTitle().length() > 120)) {

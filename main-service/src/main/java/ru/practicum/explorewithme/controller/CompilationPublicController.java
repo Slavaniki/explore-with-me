@@ -18,7 +18,7 @@ public class CompilationPublicController {
     @GetMapping()
     public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
                                                 @RequestParam(defaultValue = "0") int from,
-                                                @RequestParam(defaultValue = "1000") int size) {
+                                                @RequestParam(defaultValue = "10") int size) {
         log.info("Получить закреплённые подборки = " + pinned);
         return compilationService.getCompilations(pinned, from, size);
     }

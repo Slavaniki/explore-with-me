@@ -25,7 +25,7 @@ public interface EventService {
 
     EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId);
 
-    EventFullDto canceledEventByUser(Long userId, Long eventId);
+    EventFullDto updateEventByUser(Long userId, Long eventId, EventFullDto newEventDto);
 
     List<ParticipationRequestDto> getParticipantsInEventByUser(Long userId, Long eventId);
 

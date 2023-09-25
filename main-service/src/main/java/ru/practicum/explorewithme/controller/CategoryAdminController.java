@@ -10,6 +10,8 @@ import ru.practicum.explorewithme.dto.categories.NewCategoryDto;
 import ru.practicum.explorewithme.exeption.RequestException;
 import ru.practicum.explorewithme.service.CategoryService;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/admin/categories")
 @Slf4j
@@ -27,16 +29,17 @@ public class CategoryAdminController {
         return new ResponseEntity<>(categoryDtoRes, HttpStatus.CREATED);
     }
 
-    @PatchMapping
-    public CategoryDto updateCategory(@RequestBody CategoryDto categoryDto) {
-        if (categoryDto.getId() == null || categoryDto.getName() == null) {
-            throw new RequestException("В теле запроса не должно быть пустых полей");
+    @PatchMapping("/{catId}")
+    public CategoryDto updateCategory(@PathVariable Long catId, @RequestBody CategoryDto categoryDto) {
+        if (Objects.requireNonNull(categoryDto.getName()).length() > 50 ) {
+            throw new RequestException("В теле запроса не должно быть длинна более 50");
         }
         log.info("Обновить категорию " + categoryDto);
-        return categoryService.updateCategory(categoryDto);
+        return categoryService.updateCategory(catId, categoryDto);
     }
 
     @DeleteMapping("/{categoryId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long categoryId) {
         log.info("Удалить категорию " + categoryId);
         categoryService.deleteCategory(categoryId);

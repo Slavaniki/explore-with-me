@@ -25,9 +25,9 @@ public class EventAdminController {
     }
 
     @GetMapping
-    public List<EventFullDto> searchEventsAdmin(@RequestParam Set<Long> users,
+    public List<EventFullDto> searchEventsAdmin(@RequestParam(required = false) Set<Long> users,
                                                 @RequestParam(required = false) Set<String> states,
-                                                @RequestParam Set<Long> categories,
+                                                @RequestParam(required = false) Set<Long> categories,
                                                 @RequestParam(required = false) @DateTimeFormat(pattern =
                                                         "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                                 @RequestParam(required = false) @DateTimeFormat(pattern =

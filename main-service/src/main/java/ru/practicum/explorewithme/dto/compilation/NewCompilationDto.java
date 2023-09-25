@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class NewCompilationDto implements Serializable {
     private List<Long> events;
-    private Boolean pinned;
+    private Boolean pinned = false;
     private String title;
 }

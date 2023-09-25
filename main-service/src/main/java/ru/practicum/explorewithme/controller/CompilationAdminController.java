@@ -35,9 +35,16 @@ public class CompilationAdminController {
         log.info("Удалить событие по id " + eventId + " из подборки по id " + compId);
     }
 
+    @PatchMapping("/{compId}")
+    public CompilationDto updateCompilation(@PathVariable Long compId, @RequestBody NewCompilationDto newCompilationDto) {
+        log.info("Обновить подборку по id " + compId);
+        return compilationService.updateCompilation(compId, newCompilationDto);
+    }
+
     @PatchMapping("/{compId}/events/{eventId}")
-    public void addEventToCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
-        compilationService.addEventToCompilation(compId, eventId);
+    public void addEventToCompilation(@PathVariable Long compId, @PathVariable Long eventId,
+                                      @RequestBody NewCompilationDto newCompilationDto) {
+        compilationService.addEventToCompilation(compId, eventId, newCompilationDto);
         log.info("Добавить событие по id " + eventId + " из подборки по id " + compId);
     }
 }

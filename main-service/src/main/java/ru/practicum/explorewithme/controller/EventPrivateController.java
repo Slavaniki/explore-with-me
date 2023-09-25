@@ -43,9 +43,10 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
-    public EventFullDto canceledEventByUser(@PathVariable Long userId, @PathVariable Long eventId) {
-        log.info("Отменить событие по id " + eventId);
-        return eventService.canceledEventByUser(userId, eventId);
+    public EventFullDto updateEventByUser(@PathVariable Long userId, @PathVariable Long eventId,
+                                          @RequestBody EventFullDto event) {
+        log.info("Обновление события по id " + eventId);
+        return eventService.updateEventByUser(userId, eventId, event);
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")

@@ -27,11 +27,7 @@ public class ParticipationPrivateController {
     public ResponseEntity<ParticipationRequestDto> addRequest(@PathVariable Long userId, @RequestParam Long eventId) {
         log.info("Добавление запроса от пользователя c id " + userId + " на событие с id " + eventId);
         ParticipationRequestDto participationRequestDto = participationService.addRequestByUserForEvent(userId, eventId);
-        if (participationRequestDto.getParticipantLimit() == 0) {
-            return new ResponseEntity<>(participationRequestDto, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(participationRequestDto, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(participationRequestDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{userId}/requests/{requestId}/cancel")

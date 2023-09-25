@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,12 +11,14 @@ import ru.practicum.explorewithme.exeption.EventsException;
 import ru.practicum.explorewithme.exeption.NotFoundException;
 import ru.practicum.explorewithme.exeption.RequestException;
 import ru.practicum.explorewithme.mapper.CategoryMapper;
+import ru.practicum.explorewithme.model.Category;
 import ru.practicum.explorewithme.repository.CategoryRepository;
 import ru.practicum.explorewithme.repository.EventRepository;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 @Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
@@ -34,12 +37,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto updateCategory(CategoryDto categoryDto) {
-        if (!categoryRepository.existsById(categoryDto.getId())) {
+    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
+        if (!categoryRepository.existsById(categoryId)) {
             throw new NotFoundException("Категория с id " + categoryDto.getId() + " не найдена");
         }
-        return CategoryMapper.categoryToCategoryDto(categoryRepository.save(CategoryMapper
-                .categoryDtoToCategory(categoryDto)));
+        Category oldCategory = categoryRepository.getReferenceById(categoryId);
+        if (oldCategory.getName().equals(categoryDto.getName())){
+            return CategoryMapper.categoryToCategoryDto(oldCategory);
+        } else {
+            return CategoryMapper.categoryToCategoryDto(categoryRepository.save(CategoryMapper
+                    .categoryDtoToCategory(categoryDto)));
+        }
     }
 
     @Override

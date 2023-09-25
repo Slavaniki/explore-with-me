@@ -32,14 +32,18 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto compilationDto) {
-        if (compilationDto.getTitle() == null || compilationDto.getTitle().length() > 50) {
+        if (compilationDto.getTitle() == null || compilationDto.getTitle().isBlank() ||
+                compilationDto.getTitle().length() > 50) {
             throw new RequestException("Поле title не должно быть пустым или длиннее 50 символов");
         }
         List<EventShortDto> eventsDto = new ArrayList<>();
-        List<Event> events = eventRepository.findAllById(compilationDto.getEvents());
-        for (Event event : events) {
-            eventsDto.add(EventMapper.eventToEventShortDto(event,
-                    participationRepository.countByEvent_IdAndStatusContaining(event.getId(), "CONFIRMED")));
+        List<Event> events = new ArrayList<>();
+        if (compilationDto.getEvents() != null) {
+            events = eventRepository.findAllById(compilationDto.getEvents());
+            for (Event event : events) {
+                eventsDto.add(EventMapper.eventToEventShortDto(event,
+                        participationRepository.countByEvent_IdAndStatusContaining(event.getId(), "CONFIRMED")));
+            }
         }
         return CompilationMapper.compilationToCompilationDto(compRepository.save(CompilationMapper
                 .newCompilationDtoToCompilation(compilationDto, events)), eventsDto);
@@ -71,11 +75,26 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public void addEventToCompilation(Long compId, Long eventId) {
+    public CompilationDto updateCompilation(Long compId, NewCompilationDto newCompilationDto) {
+        Compilation compilation = compRepository.findById(compId).orElseThrow(() ->
+                new NotFoundException("Подборка с id " + compId + " не найдена"));
+        if (newCompilationDto.getTitle().length() > 50 ) {
+            throw new RequestException("Поле title не должно быть пустым или длиннее 50 символов");
+        }
+        Compilation newCompilation = compRepository.save(compilation);
+        return CompilationMapper.compilationToCompilationDto(newCompilation, new ArrayList<>());
+    }
+
+    @Override
+    @Transactional
+    public void addEventToCompilation(Long compId, Long eventId, NewCompilationDto newCompilationDto) {
         Compilation compilation = compRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException("Подборка с id " + compId + " не найдена"));
         compilation.getEvents().add(eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с id " + eventId + " не найдено")));
+        if (newCompilationDto.getTitle().length() > 50 ) {
+            throw new RequestException("Поле title не должно быть пустым или длиннее 50 символов");
+        }
         compRepository.save(compilation);
     }
 
@@ -84,7 +103,7 @@ public class CompilationServiceImpl implements CompilationService {
         List<CompilationDto> compDto = new ArrayList<>();
         List<Compilation> compilations;
         if (pinned == null) {
-            compilations = compRepository.findAll();
+            compilations = compRepository.findAll(PageRequest.of(from, size)).getContent();
             for (Compilation compilation : compilations) {
                 List<EventShortDto> eventsDto = new ArrayList<>();
                 List<Event> events = compilation.getEvents();
