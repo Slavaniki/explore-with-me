@@ -82,7 +82,16 @@ public class CompilationServiceImpl implements CompilationService {
             throw new RequestException("Поле title не должно быть пустым или длиннее 50 символов");
         }
         Compilation newCompilation = compRepository.save(compilation);
-        return CompilationMapper.compilationToCompilationDto(newCompilation, new ArrayList<>());
+        List<Long> ev = newCompilationDto.getEvents();
+        List<EventShortDto> eventsDto = new ArrayList<>();
+        if (ev != null) {
+            List<Event> events = eventRepository.findAllById(ev);
+            for (Event event : events) {
+                eventsDto.add(EventMapper.eventToEventShortDto(event,
+                        participationRepository.countByEvent_IdAndStatusContaining(event.getId(), "CONFIRMED")));
+            }
+        }
+        return CompilationMapper.compilationToCompilationDto(newCompilation, eventsDto);
     }
 
     @Override

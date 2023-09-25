@@ -7,8 +7,10 @@ import ru.practicum.explorewithme.dto.event.Location;
 import ru.practicum.explorewithme.dto.event.NewEventDto;
 import ru.practicum.explorewithme.model.Category;
 import ru.practicum.explorewithme.model.Event;
+import ru.practicum.explorewithme.model.EventState;
 import ru.practicum.explorewithme.model.User;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @UtilityClass
@@ -27,6 +29,8 @@ public class EventMapper {
         event.setRequestModeration(newEventDto.getRequestModeration());
         event.setTitle(newEventDto.getTitle());
         event.setInitiator(initiator);
+        event.setState(EventState.PENDING);
+        event.setCreationOn(LocalDateTime.now());
         return event;
     }
 

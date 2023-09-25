@@ -154,8 +154,6 @@ public class EventServiceImpl implements EventService {
         }
         Event event = EventMapper.newEventDtoToEvent(eventDto, category, userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с id " + userId + " не найден")));
-        event.setCreationOn(LocalDateTime.now());
-        event.setState(EventState.PENDING);
         return EventMapper.eventToEventFullDto(eventRepository.save(event), 0);
     }
 
@@ -199,7 +197,6 @@ public class EventServiceImpl implements EventService {
         if (event.getState() == EventState.PUBLISHED) {
             throw new EventsException("Нельзя изменить опубликованное событие");
         }
-        event.setState(EventState.PENDING);
         String textDate = newEvent.getEventDate();
         if (textDate != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -219,8 +216,14 @@ public class EventServiceImpl implements EventService {
                 (newEvent.getAnnotation().length() < 20 || newEvent.getAnnotation().length() > 2000)) {
             throw new RequestException("getAnnotation");
         }
+        if (newEvent.getState() != null && newEvent.getState().equals("SEND_REVIEW")) {
+            event.setState(EventState.PENDING);
+        }
         if (newEvent.getState() != null && newEvent.getState().equals("CANCEL_REVIEW")) {
             event.setState(EventState.CANCELED);
+        }
+        if (newEvent.getState() != null && newEvent.getState().equals("PUBLISH_EVENT")) {
+            event.setState(EventState.PUBLISHED);
         }
         return EventMapper.eventToEventFullDto(eventRepository.save(event), participationRepository
                 .countByEvent_IdAndStatusContaining(eventId, "CONFIRMED"));
@@ -365,6 +368,9 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getLocation() != null && eventDto.getLocation().getLon() != null &&
                 !eventDto.getLocation().getLon().equals(adminUpdateEvent.getLongitude())) {
             adminUpdateEvent.setLongitude(eventDto.getLocation().getLon());
+        }
+        if (eventDto.getStateAction() != null && eventDto.getStateAction().equals("SEND_REVIEW")) {
+            adminUpdateEvent.setState(EventState.PENDING);
         }
         if (eventDto.getStateAction() != null && eventDto.getStateAction().equals("REJECT_EVENT")) {
             adminUpdateEvent.setState(EventState.CANCELED);

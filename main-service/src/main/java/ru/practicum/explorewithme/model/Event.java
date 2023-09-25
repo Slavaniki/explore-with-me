@@ -28,7 +28,7 @@ public class Event {
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
     @Enumerated(EnumType.STRING)
-    private EventState state;
+    private EventState state = EventState.PENDING;
     private String title;
     private Long views;
     private Double longitude;

@@ -24,12 +24,14 @@ public class CompilationAdminController {
     }
 
     @DeleteMapping("/{compId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable Long compId) {
         compilationService.deleteCompilation(compId);
         log.info("Удалить подборку по id " + compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteEventFromCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
         compilationService.removeAnEventFromCompilation(compId, eventId);
         log.info("Удалить событие по id " + eventId + " из подборки по id " + compId);
