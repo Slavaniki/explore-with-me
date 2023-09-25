@@ -12,6 +12,7 @@ import ru.practicum.explorewithme.client.ViewsStats;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
 import ru.practicum.explorewithme.dto.event.NewEventDto;
+import ru.practicum.explorewithme.dto.participation.EventRequestStatusUpdateRequest;
 import ru.practicum.explorewithme.dto.participation.EventRequestStatusUpdateResult;
 import ru.practicum.explorewithme.dto.participation.ParticipationRequestDto;
 import ru.practicum.explorewithme.exeption.EventsException;
@@ -185,7 +186,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventFullDto updateEventByUser(Long userId, Long eventId, EventFullDto newEvent) {
+    public EventFullDto updateEventByUser(Long userId, Long eventId, NewEventDto newEvent) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с id " + eventId + " не найдено"));
         if (!userRepository.existsById(userId)) {
@@ -197,11 +198,8 @@ public class EventServiceImpl implements EventService {
         if (event.getState() == EventState.PUBLISHED) {
             throw new EventsException("Нельзя изменить опубликованное событие");
         }
-        String textDate = newEvent.getEventDate();
-        if (textDate != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime newDate = LocalDateTime.parse(textDate, formatter);
-            if (event.getEventDate().isAfter(newDate)) {
+        if (newEvent.getEventDate() != null) {
+            if (event.getEventDate().isAfter(newEvent.getEventDate())) {
                 throw new RequestException("Дата " + newEvent.getEventDate() + " раньше события");
             }
         }
@@ -216,13 +214,13 @@ public class EventServiceImpl implements EventService {
                 (newEvent.getAnnotation().length() < 20 || newEvent.getAnnotation().length() > 2000)) {
             throw new RequestException("getAnnotation");
         }
-        if (newEvent.getState() != null && newEvent.getState().equals("SEND_REVIEW")) {
+        if (newEvent.getStateAction() != null && newEvent.getStateAction().equals("SEND_TO_REVIEW")) {
             event.setState(EventState.PENDING);
         }
-        if (newEvent.getState() != null && newEvent.getState().equals("CANCEL_REVIEW")) {
+        if (newEvent.getStateAction() != null && newEvent.getStateAction().equals("CANCEL_REVIEW")) {
             event.setState(EventState.CANCELED);
         }
-        if (newEvent.getState() != null && newEvent.getState().equals("PUBLISH_EVENT")) {
+        if (newEvent.getStateAction() != null && newEvent.getStateAction().equals("PUBLISH_EVENT")) {
             event.setState(EventState.PUBLISHED);
         }
         return EventMapper.eventToEventFullDto(eventRepository.save(event), participationRepository
@@ -243,7 +241,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventRequestStatusUpdateResult confirmRequestInEventByUser(Long userId, Long eventId, List<Long> requestIds) {
+    public EventRequestStatusUpdateResult confirmRequestInEventByUser(Long userId, Long eventId,
+                                                                      EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с id " + userId + " не найден");
         }
@@ -254,7 +253,7 @@ public class EventServiceImpl implements EventService {
         }
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
         List<ParticipationRequestDto> participationDtos = new ArrayList<>();
-        requestIds.forEach(reqId -> {
+        eventRequestStatusUpdateRequest.getRequestIds().forEach(reqId -> {
             Participation confirmRequest = participationRepository.findById(reqId).orElseThrow(() ->
                     new NotFoundException("Запрос на участие с id " + reqId + " не найден"));
             if (participationRepository.countByEvent_IdAndStatusContaining(eventId, "CONFIRMED")
@@ -271,7 +270,6 @@ public class EventServiceImpl implements EventService {
             participationDtos.add(participationDto);
         });
         eventRequestStatusUpdateResult.setConfirmedRequests(participationDtos);
-        eventRequestStatusUpdateResult.setRejectedRequests(new ArrayList<>());
         return eventRequestStatusUpdateResult;
     }
 
