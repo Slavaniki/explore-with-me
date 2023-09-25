@@ -269,6 +269,7 @@ public class EventServiceImpl implements EventService {
             participationDtos.add(participationDto);
         });
         eventRequestStatusUpdateResult.setConfirmedRequests(participationDtos);
+        eventRequestStatusUpdateResult.setRejectedRequests(new ArrayList<>());
         return eventRequestStatusUpdateResult;
     }
 
