@@ -31,7 +31,7 @@ public class CategoryAdminController {
 
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@PathVariable Long catId, @RequestBody CategoryDto categoryDto) {
-        if (Objects.requireNonNull(categoryDto.getName()).length() > 50 ) {
+        if (Objects.requireNonNull(categoryDto.getName()).length() > 50) {
             throw new RequestException("В теле запроса не должно быть длинна более 50");
         }
         log.info("Обновить категорию " + categoryDto);

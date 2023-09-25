@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new NotFoundException("Категория с id " + categoryDto.getId() + " не найдена");
         }
         Category oldCategory = categoryRepository.getReferenceById(categoryId);
-        if (oldCategory.getName().equals(categoryDto.getName())){
+        if (oldCategory.getName().equals(categoryDto.getName())) {
             return CategoryMapper.categoryToCategoryDto(oldCategory);
         } else {
             return CategoryMapper.categoryToCategoryDto(categoryRepository.save(CategoryMapper

@@ -71,7 +71,7 @@ public class EventServiceImpl implements EventService {
                             && event.getAnnotation().equalsIgnoreCase(text)
                             && event.getPaid() == paid
                             && event.getEventDate().isAfter(start)
-                            && event.getEventDate().isBefore(end) )
+                            && event.getEventDate().isBefore(end))
                     .collect(Collectors.toList());
         } else if (text != null) {
             eventsWithSort = eventRepository.findAll(PageRequest.of(from, size)).stream()
