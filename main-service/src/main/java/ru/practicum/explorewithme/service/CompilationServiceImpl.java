@@ -78,7 +78,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto updateCompilation(Long compId, NewCompilationDto newCompilationDto) {
         Compilation compilation = compRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException("Подборка с id " + compId + " не найдена"));
-        if (newCompilationDto.getTitle().length() > 50) {
+        if (newCompilationDto.getTitle() != null && newCompilationDto.getTitle().length() > 50) {
             throw new RequestException("Поле title не должно быть пустым или длиннее 50 символов");
         }
         Compilation newCompilation = compRepository.save(compilation);
