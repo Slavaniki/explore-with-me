@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.dto.event;
 
+import lombok.Builder;
 import lombok.Data;
 import ru.practicum.explorewithme.model.Category;
 import ru.practicum.explorewithme.model.User;
@@ -7,6 +8,7 @@ import ru.practicum.explorewithme.model.User;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class EventFullDto {
     private Long id;
     private String annotation;

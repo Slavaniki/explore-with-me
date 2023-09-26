@@ -1,7 +1,7 @@
 package ru.practicum.explorewithme.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
@@ -15,14 +15,9 @@ import java.util.Set;
 @RestController
 @Slf4j
 @RequestMapping("/admin/events")
+@RequiredArgsConstructor
 public class EventAdminController {
-
     private final EventService eventService;
-
-    @Autowired
-    public EventAdminController(EventService eventService) {
-        this.eventService = eventService;
-    }
 
     @GetMapping
     public List<EventFullDto> searchEventsAdmin(@RequestParam(required = false) Set<Long> users,

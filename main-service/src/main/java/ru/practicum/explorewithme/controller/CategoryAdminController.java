@@ -21,7 +21,7 @@ public class CategoryAdminController {
 
     @PostMapping
     public ResponseEntity<CategoryDto> addCategory(@RequestBody NewCategoryDto categoryDto) {
-        if (categoryDto.getName() == null) {
+        if (Objects.isNull(categoryDto.getName())) {
             throw new RequestException("Поле name не должно быть пустым");
         }
         log.info("Создать новую категорию " + categoryDto.getName());

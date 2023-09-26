@@ -51,24 +51,24 @@ public class EventMapper {
         Location location = new Location();
         location.setLat(event.getLatitude());
         location.setLon(event.getLongitude());
-        EventFullDto eventFullDto = new EventFullDto();
-        eventFullDto.setId(event.getId());
-        eventFullDto.setAnnotation(event.getAnnotation());
-        eventFullDto.setConfirmedRequests(confirmedRequest);
-        eventFullDto.setCategory(event.getCategory());
-        eventFullDto.setCreatedOn(event.getCreationOn());
-        eventFullDto.setDescription(event.getDescription());
-        eventFullDto.setEventDate(event.getEventDate().format(formatter));
-        eventFullDto.setInitiator(event.getInitiator());
-        eventFullDto.setPaid(isPaid);
-        eventFullDto.setParticipantLimit(participantLimit);
-        eventFullDto.setPublishedOn(event.getPublishedOn());
-        eventFullDto.setRequestModeration(requestModeration);
-        eventFullDto.setState(event.getState().name());
-        eventFullDto.setTitle(event.getTitle());
-        eventFullDto.setViews(event.getViews());
-        eventFullDto.setLocation(location);
-        return eventFullDto;
+        return EventFullDto.builder()
+                .id(event.getId())
+                .annotation(event.getAnnotation())
+                .confirmedRequests(confirmedRequest)
+                .category(event.getCategory())
+                .createdOn(event.getCreationOn())
+                .description(event.getDescription())
+                .eventDate(event.getEventDate().format(formatter))
+                .initiator(event.getInitiator())
+                .paid(isPaid)
+                .participantLimit(participantLimit)
+                .publishedOn(event.getPublishedOn())
+                .requestModeration(requestModeration)
+                .state(event.getState().name())
+                .title(event.getTitle())
+                .views(event.getViews())
+                .location(location)
+                .build();
     }
 
     public static EventShortDto eventToEventShortDto(Event event, Integer confirmedRequests) {
