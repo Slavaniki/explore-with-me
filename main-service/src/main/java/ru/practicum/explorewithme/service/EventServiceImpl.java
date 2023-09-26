@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.client.Client;
-import ru.practicum.explorewithme.client.EndpointHit;
 import ru.practicum.explorewithme.client.ViewsStats;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
@@ -93,17 +92,7 @@ public class EventServiceImpl implements EventService {
                     .collect(Collectors.toList());
         }
         List<EventShortDto> eventsShortDto = new ArrayList<>();
-        List<String> uris = new ArrayList<>();
-        saveView(request.getRequestURI(), request.getLocalAddr());
-        for (Event event : eventsWithSort) {
-            saveView(request.getRequestURI() + "/" + event.getId(), request.getRemoteAddr());
-            uris.add(request.getRequestURI() + "/" +  event.getId());
-        }
-        List<ViewsStats> views = getViewsByEvent(rangeStart, rangeEnd, uris);
         for (Event event : Objects.requireNonNull(eventsWithSort)) {
-            event.setViews(views.stream()
-                    .filter(viewsStats -> viewsStats.getUri().equals(request.getRequestURI() + "/" + event.getId()))
-                    .findFirst().get().getHits());
             eventsShortDto.add(EventMapper.eventToEventShortDto(event, participationRepository
                     .countByEvent_IdAndStatusContaining(event.getId(), "CONFIRMED")));
         }
@@ -119,13 +108,12 @@ public class EventServiceImpl implements EventService {
         if (event == null) {
             throw new NotFoundException("Событие с id " + eventId + " не найдено");
         }
-        saveView(request.getRequestURI(), request.getRemoteAddr());
-        List<ViewsStats> lvs = getViewsByEvent(LocalDateTime.now().minusYears(5), LocalDateTime.now().plusSeconds(2),
-                List.of(request.getRequestURI()));
+        List<ViewsStats> lvs = getViewsByEvent(LocalDateTime.now().minusYears(5), LocalDateTime.now().plusSeconds(20),
+                List.of(request.getRequestURI() + "/" + eventId));
         if (lvs.isEmpty()) {
             throw new NotFoundException("Событие с id " + eventId + " не найдено");
         }
-        event.setViews(lvs.get(0).getHits());
+        event.setViews(new Long(lvs.size()));
         return EventMapper.eventToEventFullDto(event,
                 participationRepository.countByEvent_IdAndStatusContaining(eventId, "CONFIRMED"));
     }
@@ -391,16 +379,6 @@ public class EventServiceImpl implements EventService {
         String start = rangeStart == null ? LocalDateTime.now().minusYears(5).format(formatter) : rangeStart.format(formatter);
         String end = rangeEnd == null ? LocalDateTime.now().plusSeconds(20).format(formatter) : rangeEnd.format(formatter);
         return statsClient.getViews(start, end, uris, false);
-    }
-
-    private void saveView(String uri, String ip) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        EndpointHit hit = new EndpointHit();
-        hit.setApp("main-service");
-        hit.setIp(ip);
-        hit.setUri(uri);
-        hit.setTimestamp(LocalDateTime.now().format(formatter));
-        statsClient.postEndpointHit(hit);
     }
 
     private void changeStatusOfParticipantToRejected(Long eventId) {

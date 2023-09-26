@@ -10,6 +10,4 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
     List<EndpointHit> findByUriInAndTimestampAfterAndTimestampBefore(List<String> uris, LocalDateTime start, LocalDateTime end);
 
     List<EndpointHit> findByTimestampAfterAndTimestampBefore(LocalDateTime start, LocalDateTime end);
-
-    List<EndpointHit> findByUriAndIp(String uri, String ip);
 }

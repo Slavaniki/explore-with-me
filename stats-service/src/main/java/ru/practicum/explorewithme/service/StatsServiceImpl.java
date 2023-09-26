@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explorewithme.exception.RequestException;
 import ru.practicum.explorewithme.model.EndpointHit;
 import ru.practicum.explorewithme.model.EndpointHitDto;
 import ru.practicum.explorewithme.model.ViewStatsDto;
@@ -30,10 +31,7 @@ public class StatsServiceImpl implements StatsService {
     @Transactional
     public void createHit(EndpointHitDto endpointHitDto) {
         endpointHitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        List<EndpointHit> testUnique = statsRepository.findByUriAndIp(endpointHitDto.getUri(), endpointHitDto.getIp());
-        if (testUnique.size() == 0) {
-            statsRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
-        }
+        statsRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
     }
 
     @Override
@@ -41,6 +39,9 @@ public class StatsServiceImpl implements StatsService {
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<EndpointHit> hits;
         List<String> urisWithoutBrackets = new ArrayList<>();
+        if (start.isAfter(end) || start.isEqual(end)) {
+            throw new RequestException("Дата");
+        }
         if (uris != null) {
             for (String uri : uris) {
                 uri = uri.replace("[", "").replace("]", "");
@@ -56,7 +57,7 @@ public class StatsServiceImpl implements StatsService {
                     .collect(Collectors.toList());
         }
         if (hits.isEmpty()) {
-            ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0L, "unavailable");
+            ViewStatsDto nullViews = new ViewStatsDto("unavailable", "unavailable", 0L);
             return List.of(nullViews);
         } else {
             return EndpointHitMapper.toViewsStatsDto(hits);

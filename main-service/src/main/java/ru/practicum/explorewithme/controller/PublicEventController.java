@@ -43,13 +43,7 @@ public class PublicEventController {
                                                    @RequestParam(defaultValue = "10") int size,
                                                    HttpServletRequest request) {
         log.info("Получить события с фильтром");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        EndpointHit hit = new EndpointHit();
-        hit.setApp("main-service");
-        hit.setIp(request.getLocalAddr());
-        hit.setUri(request.getRequestURI());
-        hit.setTimestamp(LocalDateTime.now().format(formatter));
-        client.postEndpointHit(hit);
+        saveView(request.getRequestURI(), request.getRemoteAddr());
         return eventService.getPublishedEventsWithFilter(text, categories, paid, rangeStart, rangeEnd, onlyAvailable,
                 sort, from, size, request);
     }
@@ -57,13 +51,17 @@ public class PublicEventController {
     @GetMapping("/{id}")
     public EventFullDto getFullInfoAboutEventBuId(@PathVariable Long id, HttpServletRequest request) {
         log.info("Получить полную информацию о событии по id " + id);
+        saveView(request.getRequestURI(), request.getRemoteAddr());
+        return eventService.getPublishedEventById(id, request);
+    }
+
+    private void saveView(String uri, String ip) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         EndpointHit hit = new EndpointHit();
         hit.setApp("main-service");
-        hit.setIp(request.getLocalAddr());
-        hit.setUri(request.getRequestURI());
+        hit.setIp(ip);
+        hit.setUri(uri);
         hit.setTimestamp(LocalDateTime.now().format(formatter));
         client.postEndpointHit(hit);
-        return eventService.getPublishedEventById(id, request);
     }
 }

@@ -1,8 +1,9 @@
 package ru.practicum.explorewithme.service;
 
+import javafx.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 import ru.practicum.explorewithme.model.EndpointHit;
 import ru.practicum.explorewithme.model.EndpointHitDto;
-import ru.practicum.explorewithme.model.Triple;
 import ru.practicum.explorewithme.model.ViewStatsDto;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class EndpointHitMapper {
     public static EndpointHit toEndpointHit(EndpointHitDto endpointHitDto) {
         return new EndpointHit(
@@ -22,15 +24,12 @@ public class EndpointHitMapper {
     }
 
     public static List<ViewStatsDto> toViewsStatsDto(List<EndpointHit> endpointHits) {
-        EndpointHit eh;
         return endpointHits.stream().collect(Collectors.groupingBy(
-                        endpointHit -> new Triple(endpointHit.getApp(), endpointHit.getUri(), endpointHit.getIp()),
-                        Collectors.counting()))
+                        endpointHit -> new Pair(endpointHit.getApp(), endpointHit.getUri()), Collectors.counting()))
                 .entrySet().stream().map(entry -> new ViewStatsDto(
-                        entry.getKey().getFirst().toString(),
-                        entry.getKey().getSecond().toString(),
-                        entry.getValue().longValue(),
-                        entry.getKey().getThird().toString()
+                        entry.getKey().getKey().toString(),
+                        entry.getKey().getValue().toString(),
+                        entry.getValue()
                         ))
                 .collect(Collectors.toList());
     }
