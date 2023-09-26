@@ -8,6 +8,8 @@ import ru.practicum.explorewithme.model.ViewStatsDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,13 +26,15 @@ public class EndpointHitMapper {
     }
 
     public static List<ViewStatsDto> toViewsStatsDto(List<EndpointHit> endpointHits) {
-        return endpointHits.stream().collect(Collectors.groupingBy(
+        List<ViewStatsDto> eph = endpointHits.stream().collect(Collectors.groupingBy(
                         endpointHit -> new Pair(endpointHit.getApp(), endpointHit.getUri()), Collectors.counting()))
                 .entrySet().stream().map(entry -> new ViewStatsDto(
                         entry.getKey().getKey().toString(),
                         entry.getKey().getValue().toString(),
                         entry.getValue()
-                        ))
+                ))
                 .collect(Collectors.toList());
+        Collections.sort(eph, Comparator.comparing(ViewStatsDto::getHits));
+        return eph;
     }
 }
