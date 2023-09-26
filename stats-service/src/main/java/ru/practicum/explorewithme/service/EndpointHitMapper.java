@@ -34,7 +34,7 @@ public class EndpointHitMapper {
                         entry.getValue()
                 ))
                 .collect(Collectors.toList());
-        Collections.sort(eph, Comparator.comparing(ViewStatsDto::getHits));
+        Collections.sort(eph, Comparator.comparing(ViewStatsDto::getHits).reversed());
         return eph;
     }
 }
