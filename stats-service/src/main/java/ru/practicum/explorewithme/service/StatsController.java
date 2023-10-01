@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.service;
 
+import org.springframework.http.HttpStatus;
 import ru.practicum.explorewithme.model.EndpointHitDto;
 import ru.practicum.explorewithme.model.ViewStatsDto;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public void createHit(@RequestBody EndpointHitDto endpointHitDto) {
         log.info("Запрос на добавление хита: " + endpointHitDto);
         statsService.createHit(endpointHitDto);

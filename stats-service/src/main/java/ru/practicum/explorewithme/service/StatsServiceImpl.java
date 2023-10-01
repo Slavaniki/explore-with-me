@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explorewithme.exception.RequestException;
 import ru.practicum.explorewithme.model.EndpointHit;
 import ru.practicum.explorewithme.model.EndpointHitDto;
 import ru.practicum.explorewithme.model.ViewStatsDto;
@@ -38,6 +39,9 @@ public class StatsServiceImpl implements StatsService {
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<EndpointHit> hits;
         List<String> urisWithoutBrackets = new ArrayList<>();
+        if (start.isAfter(end) || start.isEqual(end)) {
+            throw new RequestException("Дата");
+        }
         if (uris != null) {
             for (String uri : uris) {
                 uri = uri.replace("[", "").replace("]", "");
