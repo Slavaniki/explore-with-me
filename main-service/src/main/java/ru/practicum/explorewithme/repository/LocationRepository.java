@@ -7,6 +7,6 @@ import ru.practicum.explorewithme.model.Location;
 
 import java.util.Set;
 
-public interface SpecificLocationRepository extends JpaRepository<Location, Long> {
+public interface LocationRepository extends JpaRepository<Location, Long> {
     Page<Location> findAllByIdIn(Set<Long> ids, Pageable pageable);
 }

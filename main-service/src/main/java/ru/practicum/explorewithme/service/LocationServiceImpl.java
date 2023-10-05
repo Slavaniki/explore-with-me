@@ -14,7 +14,7 @@ import ru.practicum.explorewithme.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.Event;
 import ru.practicum.explorewithme.model.Location;
 import ru.practicum.explorewithme.repository.EventRepository;
-import ru.practicum.explorewithme.repository.SpecificLocationRepository;
+import ru.practicum.explorewithme.repository.LocationRepository;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class LocationServiceImpl implements LocationService {
-    private final SpecificLocationRepository locationRepository;
+    private final LocationRepository locationRepository;
     private final EventRepository eventRepository;
 
     @Override
