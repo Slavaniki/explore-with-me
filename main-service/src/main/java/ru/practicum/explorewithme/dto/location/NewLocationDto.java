@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
+
 @Data
 public class NewLocationDto implements Serializable {
     @NotNull
