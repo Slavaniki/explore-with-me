@@ -3,7 +3,6 @@ package ru.practicum.explorewithme.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
-import ru.practicum.explorewithme.dto.event.Location;
 import ru.practicum.explorewithme.dto.event.NewEventDto;
 import ru.practicum.explorewithme.model.Category;
 import ru.practicum.explorewithme.model.Event;
@@ -48,7 +47,7 @@ public class EventMapper {
             requestModeration = event.getRequestModeration();
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Location location = new Location();
+        EventFullDto.Location location = new EventFullDto.Location();
         location.setLat(event.getLatitude());
         location.setLon(event.getLongitude());
         return EventFullDto.builder()

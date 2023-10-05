@@ -26,4 +26,10 @@ public class EventFullDto {
     private String state;
     private String title;
     private Long views;
+
+    @Data
+    public static class Location {
+        private Double lat;
+        private Double lon;
+    }
 }
