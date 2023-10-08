@@ -21,8 +21,8 @@ public class EventMapper {
         event.setCategory(category);
         event.setDescription(newEventDto.getDescription());
         event.setEventDate(newEventDto.getEventDate());
-        event.setLatitude(newEventDto.getLocation().getLatitude());
-        event.setLongitude(newEventDto.getLocation().getLongitude());
+        event.setLatitude(newEventDto.getLocation().getLat());
+        event.setLongitude(newEventDto.getLocation().getLon());
         event.setPaid(newEventDto.getPaid());
         event.setParticipantLimit(newEventDto.getParticipantLimit());
         event.setRequestModeration(newEventDto.getRequestModeration());
