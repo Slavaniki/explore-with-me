@@ -21,8 +21,8 @@ public class EventMapper {
         event.setCategory(category);
         event.setDescription(newEventDto.getDescription());
         event.setEventDate(newEventDto.getEventDate());
-        event.setLatitude(newEventDto.getLocation().getLat());
-        event.setLongitude(newEventDto.getLocation().getLon());
+        event.setLatitude(newEventDto.getLocation().getLatitude());
+        event.setLongitude(newEventDto.getLocation().getLongitude());
         event.setPaid(newEventDto.getPaid());
         event.setParticipantLimit(newEventDto.getParticipantLimit());
         event.setRequestModeration(newEventDto.getRequestModeration());
@@ -48,8 +48,8 @@ public class EventMapper {
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         EventFullDto.Location location = new EventFullDto.Location();
-        location.setLat(event.getLatitude());
-        location.setLon(event.getLongitude());
+        location.setLatitude(event.getLatitude());
+        location.setLongitude(event.getLongitude());
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())

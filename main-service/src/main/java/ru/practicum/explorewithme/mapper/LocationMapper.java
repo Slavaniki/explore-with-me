@@ -14,24 +14,24 @@ import java.util.stream.Collectors;
 public class LocationMapper {
 
     public static Location newSpecificLocationToSpecificLocation(NewLocationDto locationDto) {
-        Location location = new Location();
-        location.setEvents(Collections.emptyList());
-        location.setName(locationDto.getName());
-        location.setLatitude(locationDto.getLatitude());
-        location.setLongitude(locationDto.getLongitude());
-        location.setRadius(locationDto.getRadius());
-        return location;
+        return Location.builder()
+                .name(locationDto.getName())
+                .events(Collections.emptyList())
+                .latitude(locationDto.getLatitude())
+                .longitude(locationDto.getLongitude())
+                .radius(locationDto.getRadius())
+                .build();
     }
 
     public static LocationDto specificLocationToSpecificLocationDto(Location location) {
-        LocationDto locationDto = new LocationDto();
-        locationDto.setId(location.getId());
-        locationDto.setEvents(location.getEvents());
-        locationDto.setName(location.getName());
-        locationDto.setRadius(location.getRadius());
-        locationDto.setLongitude(location.getLongitude());
-        locationDto.setLatitude(location.getLatitude());
-        return locationDto;
+        return LocationDto.builder()
+                .id(location.getId())
+                .name(location.getName())
+                .events(location.getEvents())
+                .latitude(location.getLatitude())
+                .longitude(location.getLongitude())
+                .radius(location.getRadius())
+                .build();
     }
 
     public static List<LocationDto> locationsToLocationsDto(Page<Location> locations) {

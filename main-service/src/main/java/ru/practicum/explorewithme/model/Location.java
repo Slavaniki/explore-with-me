@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "specific_location")
+@Builder
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

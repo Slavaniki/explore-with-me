@@ -29,7 +29,7 @@ public class EventFullDto {
 
     @Data
     public static class Location {
-        private Double lat;
-        private Double lon;
+        private Double latitude;
+        private Double longitude;
     }
 }
