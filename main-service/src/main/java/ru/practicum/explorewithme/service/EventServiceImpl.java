@@ -353,13 +353,13 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getTitle() != null && !eventDto.getTitle().equals(adminUpdateEvent.getTitle())) {
             adminUpdateEvent.setTitle(eventDto.getTitle());
         }
-        if (eventDto.getLocation() != null && eventDto.getLocation().getLatitude() != null &&
-                !eventDto.getLocation().getLatitude().equals(adminUpdateEvent.getLatitude())) {
-            adminUpdateEvent.setLatitude(eventDto.getLocation().getLatitude());
+        if (eventDto.getLocation() != null && eventDto.getLocation().getLat() != null &&
+                !eventDto.getLocation().getLat().equals(adminUpdateEvent.getLatitude())) {
+            adminUpdateEvent.setLatitude(eventDto.getLocation().getLat());
         }
-        if (eventDto.getLocation() != null && eventDto.getLocation().getLongitude() != null &&
-                !eventDto.getLocation().getLongitude().equals(adminUpdateEvent.getLongitude())) {
-            adminUpdateEvent.setLongitude(eventDto.getLocation().getLongitude());
+        if (eventDto.getLocation() != null && eventDto.getLocation().getLon() != null &&
+                !eventDto.getLocation().getLon().equals(adminUpdateEvent.getLongitude())) {
+            adminUpdateEvent.setLongitude(eventDto.getLocation().getLon());
         }
         if (eventDto.getStateAction() != null && eventDto.getStateAction().equals("SEND_REVIEW")) {
             adminUpdateEvent.setState(EventState.PENDING);
