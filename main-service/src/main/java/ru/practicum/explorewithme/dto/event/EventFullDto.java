@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.explorewithme.model.Category;
@@ -26,4 +27,12 @@ public class EventFullDto {
     private String state;
     private String title;
     private Long views;
+
+    @Data
+    public static class Location {
+        @JsonProperty("lat")
+        private Double latitude;
+        @JsonProperty("lon")
+        private Double longitude;
+    }
 }

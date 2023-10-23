@@ -3,7 +3,6 @@ package ru.practicum.explorewithme.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
-import ru.practicum.explorewithme.dto.event.Location;
 import ru.practicum.explorewithme.dto.event.NewEventDto;
 import ru.practicum.explorewithme.model.Category;
 import ru.practicum.explorewithme.model.Event;
@@ -22,8 +21,8 @@ public class EventMapper {
         event.setCategory(category);
         event.setDescription(newEventDto.getDescription());
         event.setEventDate(newEventDto.getEventDate());
-        event.setLatitude(newEventDto.getLocation().getLat());
-        event.setLongitude(newEventDto.getLocation().getLon());
+        event.setLatitude(newEventDto.getLocation().getLatitude());
+        event.setLongitude(newEventDto.getLocation().getLongitude());
         event.setPaid(newEventDto.getPaid());
         event.setParticipantLimit(newEventDto.getParticipantLimit());
         event.setRequestModeration(newEventDto.getRequestModeration());
@@ -48,9 +47,9 @@ public class EventMapper {
             requestModeration = event.getRequestModeration();
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Location location = new Location();
-        location.setLat(event.getLatitude());
-        location.setLon(event.getLongitude());
+        EventFullDto.Location location = new EventFullDto.Location();
+        location.setLatitude(event.getLatitude());
+        location.setLongitude(event.getLongitude());
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
